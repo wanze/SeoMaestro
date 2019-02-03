@@ -24,7 +24,8 @@ class ApiTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->field = $this->createField('FieldtypeSeoMaestro', self::FIELD_NAME);
+        $fieldtype = $this->wire('fieldtypes')->get('FieldtypeSeoMaestro');
+        $this->field = $this->createField($fieldtype, self::FIELD_NAME);
 
         $this->template = $this->createTemplate(self::TEMPLATE_NAME, dirname(__DIR__) . '/templates/api.php');
         $this->template->fieldgroup->add($this->field);

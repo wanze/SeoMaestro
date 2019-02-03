@@ -12,8 +12,8 @@ use SeoMaestro\SitemapManager;
  */
 class SitemapManagerTest extends FunctionalTestCase
 {
-    const TEMPLATE_NAME = 'seoTestTemplate7';
-    const FIELD_NAME = 'seoTestField7';
+    const TEMPLATE_NAME = 'seoTestTemplate';
+    const FIELD_NAME = 'seoTestField';
 
     /**
      * @var SitemapManager
@@ -35,7 +35,8 @@ class SitemapManagerTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $field = $this->createField('FieldtypeSeoMaestro', self::FIELD_NAME);
+        $fieldtype = $this->wire('fieldtypes')->get('FieldtypeSeoMaestro');
+        $field = $this->createField($fieldtype, self::FIELD_NAME);
 
         $this->template = $this->createTemplate(self::TEMPLATE_NAME, dirname(__DIR__) . '/templates/sitemap-manager.php');
         $this->template->fieldgroup->add($field);
