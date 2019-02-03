@@ -1,6 +1,7 @@
 # Seo Maestro
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/wanze/SeoMaestro.svg?branch=master)](https://travis-ci.org/wanze/SeoMaestro)
 
 A ProcessWire module helping you to manage SEO related tasks like a boss! 😎✌️
 

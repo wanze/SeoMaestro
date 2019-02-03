@@ -1,0 +1,28 @@
+language: php
+
+php:
+    - 7.1.18
+    - 7.2
+    - 7.3
+
+services:
+    - mysql
+
+install:
+    # Install wireshell
+    - composer global require wireshell/wireshell
+
+    # Install ProcessWire
+    - cd ../..
+    - ~/.config/composer/vendor/bin/wireshell new processwire --profile=languages --dbUser=root --dbPass= --dbName=processwire --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=s3cr3t --useremail=john.doe@acme.com
+
+    # Copy the cloned module to site/modules
+    - cd processwire/site/modules
+    - cp -r $TRAVIS_BUILD_DIR .
+
+    # Install dev dependencies
+    - cd SeoMaestro
+    - composer install
+
+script:
+    - vendor/bin/phpunit --bootstrap tests/bootstrap.php tests/src --colors
