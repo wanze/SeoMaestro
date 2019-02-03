@@ -1,0 +1,16 @@
+{
+    "title": "Seo Maestro",
+    "version": "0.1.0",
+    "summary": "Seo Maestro allows to easily manage your page's metatags and the XML sitemap.",
+    "author": "Stefan Wanzenried (Wanze)",
+    "href": "",
+    "autoload": true,
+    "singular": true,
+    "installs": [
+        "FieldtypeSeoMaestro"
+    ],
+    "requires": [
+        "PHP>=7.0.0",
+        "ProcessWire>=3.0.0"
+    ]
+}

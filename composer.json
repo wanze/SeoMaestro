@@ -1,0 +1,27 @@
+{
+    "name": "wanze/processwire-seomaestro",
+    "description": "Seo Maestro allows to easily manage your page's meta data and sitemap.",
+    "type": "pw-module",
+    "keywords": ["processwire", "seo", "metatags", "sitemap"],
+    "homepage": "https://github.com/wanze/SeoMaestro",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Stefan Wanzenried",
+            "email": "stefan.wanzenried@gmail.com",
+            "homepage": "https://github.com/wanze"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "hari/pw-module": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SeoMaestro\\Test\\": "tests/src/"
+        }
+    }
+}

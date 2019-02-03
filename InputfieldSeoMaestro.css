@@ -1,0 +1,22 @@
+.seo-maestro-inputfield-seo > .InputfieldContent > .Inputfields {
+    padding-top: 1rem;
+}
+
+.seo-maestro-inputfield-embed {
+    outline: 0;
+    margin-top: 0 !important;
+}
+
+.seo-maestro-inputfield-embed > .InputfieldHeader,
+.seo-maestro-inputfield-embed > .InputfieldContent
+{
+    border: 0 !important;
+    padding-top: 0 !important;
+}
+
+.seo-maestro-opengraph-image {
+    display: block;
+    width: 150px;
+    height: auto;
+    margin-bottom: 1em;
+}
