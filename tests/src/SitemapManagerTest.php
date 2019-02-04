@@ -72,6 +72,8 @@ class SitemapManagerTest extends FunctionalTestCase
      */
     public function sitemap_should_not_contain_excluded_pages()
     {
+        $this->createPage($this->template, '/');
+
         $page = $this->createPage($this->template, '/', 'sitemap-should-not-contain-excluded-pages');
         $page->get(self::FIELD_NAME)->sitemap->include = 0;
         $page->save();
@@ -87,19 +89,21 @@ class SitemapManagerTest extends FunctionalTestCase
      */
     public function sitemap_should_not_contain_pages_not_viewable()
     {
-        $this->markTestSkipped('Seems to work fine locally but not in Travis, to be debugged...');
-
         $page = $this->createPage($this->template, '/', 'sitemap-should-not-contain-pages-not-viewable');
 
         $this->sitemapManager->generate($this->sitemap);
         $this->assertSitemapContains($page->get('name'));
 
+        // Make $page::viewable() return false by changing the return value with a hook.
         $this->wire()->addHookAfter('Page::viewable', function (HookEvent $event) use ($page) {
             $hookedPage = $event->object;
             if ($hookedPage->id === $page->id) {
                 $event->return = false;
             }
         });
+
+        // We need at least one other page or the sitemap won't get generated.
+        $this->createPage($this->template, '/');
 
         $this->sitemapManager->generate($this->sitemap);
         $this->assertSitemapNotContains($page->get('name'));
