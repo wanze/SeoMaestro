@@ -2,6 +2,7 @@
 
 namespace SeoMaestro;
 
+use ProcessWire\Language;
 use ProcessWire\WireData;
 use ProcessWire\WireException;
 
@@ -164,7 +165,7 @@ class SeoData extends WireData
             ->getPage()
             ->get('template')
             ->get('fieldgroup')
-            ->getField($this->pageValue->getField()->name, true);
+            ->getField($this->pageValue->getField(), true);
 
         $key = sprintf('%s_%s', $this->group, $key);
 
@@ -188,6 +189,10 @@ class SeoData extends WireData
     private function getCurrentLanguageId()
     {
         $currentLanguage = $this->wire('user')->language;
+
+        if (!$currentLanguage instanceof Language) {
+            return '';
+        }
 
         return $currentLanguage->isDefault() ? '' : $currentLanguage->id;
     }

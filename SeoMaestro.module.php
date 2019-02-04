@@ -5,7 +5,7 @@ namespace ProcessWire;
 use SeoMaestro\SitemapManager;
 
 /**
- * A module to manage metatags and the XML sitemap.
+ * The main module of SeoMaestro, managing the XML sitemap.
  */
 class SeoMaestro extends WireData implements Module, ConfigurableModule
 {

@@ -68,7 +68,7 @@ class FormManager extends Wire
      */
     private function populateLanguageValue(Inputfield $inputfield, array $values)
     {
-        foreach ($this->wire('languages') as $language) {
+        foreach ($this->wire('languages') ?: [] as $language) {
             $langId = $language->id;
             $name = $inputfield->attr('name');
             $value = $values[$name . $langId] ?? $values[$name] ?? '';

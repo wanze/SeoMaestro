@@ -49,7 +49,7 @@ class InputfieldSeoMaestro extends Inputfield
             $inherit = $this->wire('input')->post($key . '_inherit');
 
             if ($isTranslatable) {
-                foreach ($this->wire('languages') as $language) {
+                foreach ($this->wire('languages') ?: [] as $language) {
                     $langId = $language->isDefault() ? '' : $language->id;
                     $keyLang = $language->isDefault() ? $key : sprintf('%s__%s', $key, $language->id);
                     $value = ($inherit) ? 'inherit' : $this->wire('input')->post($keyLang);

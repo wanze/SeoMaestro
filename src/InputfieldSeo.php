@@ -89,7 +89,7 @@ class InputfieldSeo extends InputfieldFieldset
                 $this->inputfield->attr('checked', '');
             }
 
-            foreach ($this->wire('languages') as $language) {
+            foreach ($this->wire('languages') ?: [] as $language) {
                 $langId = $language->isDefault() ? '' : $language->id;
                 $this->inputfield->attr("value{$langId}", '');
             }
