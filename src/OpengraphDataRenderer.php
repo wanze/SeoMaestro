@@ -78,7 +78,8 @@ class OpengraphDataRenderer extends Wire implements SeoDataRendererInterface
                         continue;
                     }
 
-                    $tags[] = $this->renderTag('image:type', sprintf('image/%s', $pageImage->ext));
+                    $ext = $pageImage->ext === 'jpg' ? 'jpeg' : $pageImage->ext;
+                    $tags[] = $this->renderTag('image:type', sprintf('image/%s', $ext));
                     $tags[] = $this->renderTag('image:width', $pageImage->width);
                     $tags[] = $this->renderTag('image:height', $pageImage->height);
                 }

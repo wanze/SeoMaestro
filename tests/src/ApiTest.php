@@ -186,10 +186,10 @@ class ApiTest extends FunctionalTestCase
     {
         $page = $this->createPage($this->template, '/');
         $page->title = 'Seo Maestro';
-        $page->get(self::FIELD_NAME)->meta->description = 'This <string> should be encoded';
+        $page->get(self::FIELD_NAME)->meta->description = "This <a href='/foo'>string</a> <b>should</b><br> be sanitized and encode'd correctly\n";
         $page->save();
 
-        $expected = "<meta name=\"title\" value=\"Seo Maestro\">\n<meta name=\"description\" value=\"This &lt;string&gt; should be encoded\">";
+        $expected = "<meta name=\"title\" value=\"Seo Maestro\">\n<meta name=\"description\" value=\"This string should be sanitized and encode&#039;d correctly\">";
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
 
         $page->get(self::FIELD_NAME)->meta->keywords = 'Seo Maestro, ProcessWire, Module';
@@ -208,7 +208,7 @@ class ApiTest extends FunctionalTestCase
         $page->get(self::FIELD_NAME)->opengraph->image = '{imageOg}';
         $page->save();
 
-        $expected = sprintf("<meta property=\"og:title\" content=\"Seo Maestro\">\n<meta property=\"og:image\" content=\"http://localhost/site/assets/files/%s/schynige-platte.jpg\">\n<meta property=\"og:image:type\" content=\"image/jpg\">\n<meta property=\"og:image:width\" content=\"1024\">\n<meta property=\"og:image:height\" content=\"768\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"%s\">", $page->id, $page->httpUrl);
+        $expected = sprintf("<meta property=\"og:title\" content=\"Seo Maestro\">\n<meta property=\"og:image\" content=\"http://localhost/site/assets/files/%s/schynige-platte.jpg\">\n<meta property=\"og:image:type\" content=\"image/jpeg\">\n<meta property=\"og:image:width\" content=\"1024\">\n<meta property=\"og:image:height\" content=\"768\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"%s\">", $page->id, $page->httpUrl);
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->opengraph->render());
     }
 
