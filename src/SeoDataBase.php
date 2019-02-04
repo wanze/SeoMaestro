@@ -7,89 +7,77 @@ use ProcessWire\WireData;
 use ProcessWire\WireException;
 
 /**
- * Holds the SEO data of a group such as meta, opengraph, robots or sitemap.
+ * Base class for each group holding a bunch of SEO data.
  */
-class SeoData extends WireData
+abstract class SeoDataBase extends WireData implements SeoDataInterface
 {
     /**
      * @var \SeoMaestro\PageValue
      */
-    private $pageValue;
+    protected $pageValue;
 
     /**
      * @var string
      */
-    private $group;
-
-    /**
-     * @var \SeoMaestro\SeoDataRendererInterface
-     */
-    private $renderer;
+    protected $group;
 
     /**
      * @param \SeoMaestro\PageValue $pageValue
-     * @param string $group
      * @param array $data
-     * @param \SeoMaestro\SeoDataRendererInterface $renderer
      */
-    public function __construct(PageValue $pageValue, $group, array $data, SeoDataRendererInterface $renderer)
+    public function __construct(PageValue $pageValue, array $data)
     {
         parent::__construct();
 
         $this->pageValue = $pageValue;
-        $this->group = $group;
         $this->data = $data;
-        $this->renderer = $renderer;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function get($key)
+    public function get($name)
     {
-        $value = $this->lookupUnformattedValue($key);
+        $value = $this->lookupUnformattedValue($name);
 
-        return $this->renderer->renderValue($key, $value, $this->pageValue);
-    }
-
-    /**
-     * Get the rendered value from the field's configuration.
-     *
-     * @param string $key
-     *
-     * @return string|null
-     */
-    public function getInherited($key)
-    {
-        $value = $this->lookupInheritedValue($key);
-
-        return $this->renderer->renderValue($key, $value, $this->pageValue);
-    }
-
-    /**
-     * Get the unformatted value of the given key.
-     *
-     * @param string $key
-     *
-     * @return string|null
-     */
-    public function getUnformatted($key) {
-        return $this->lookupUnformattedValue($key);
+        return $this->renderValue($name, $value);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function set($key, $value)
+    public function getInherited($name)
     {
-        if (!in_array($key, array_keys($this->data))) {
-            throw new WireException(sprintf('Unable to set "%s" for group "%s"', $key, $this->group));
+        $value = $this->lookupInheritedValue($name);
+
+        return $this->renderValue($name, $value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUnformatted($name) {
+        return $this->lookupUnformattedValue($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function set($name, $value)
+    {
+        if (!in_array($name, array_keys($this->data))) {
+            throw new WireException(sprintf('Unable to set "%s" for group "%s"', $name, $this->group));
         }
+
+        $value = $this->sanitizeValue($name, $value);
+
+        // Strip tags and remove newlines.
+        $value = $this->wire('sanitizer')->text($value, ['maxLength' => 0]);
 
         $langId = $this->getCurrentLanguageId();
 
         // Propagate the new value back to the page value.
-        $keyPageField = sprintf('%s_%s%s', $this->group, $key, $langId);
+        $keyPageField = sprintf('%s_%s%s', $this->group, $name, $langId);
         $this->pageValue->set($keyPageField, $value);
 
         if ($this->pageValue->isChanged()) {
@@ -98,7 +86,7 @@ class SeoData extends WireData
             $this->pageValue->getPage()->trackChange($field);
         }
 
-        return parent::set($key . $langId, $value);
+        return parent::set($name . $langId, $value);
     }
 
     /**
@@ -108,7 +96,6 @@ class SeoData extends WireData
      */
     public function ___render()
     {
-        // The renderer assumes that inherited data has been looked up.
         $data = [];
         foreach (array_keys($this->data) as $name) {
             // Skip language values.
@@ -119,8 +106,39 @@ class SeoData extends WireData
             $data[$name] = $this->lookupUnformattedValue($name);
         }
 
-        return implode("\n", $this->renderer->renderMetatags($data, $this->pageValue));
+        return implode("\n", $this->renderMetatags($data));
     }
+
+    /**
+     * Render an unformatted value, e.g. transform placeholders to actual values.
+     *
+     * @param string $name
+     * @param mixed $value
+     *
+     * @return string
+     */
+    abstract protected function renderValue($name, $value);
+
+    /**
+     * Return the rendered meta tags of the given data as array.
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    abstract protected function ___renderMetatags(array $data);
+
+    /**
+     * Sanitize the given unformatted value of the given name.
+     *
+     * Throw an exception if the value is not valid.
+     *
+     * @param string $name
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    abstract protected function sanitizeValue($name, $value);
 
     /**
      * Lookup the unformatted value for the given key.
@@ -131,7 +149,7 @@ class SeoData extends WireData
      *
      * @return string|null
      */
-    private function lookupUnformattedValue($key)
+    protected function lookupUnformattedValue($key)
     {
         $langId = $this->getCurrentLanguageId();
 
@@ -156,7 +174,7 @@ class SeoData extends WireData
      *
      * @return mixed|null
      */
-    private function lookupInheritedValue($key)
+    protected function lookupInheritedValue($key)
     {
         $langId = $this->getCurrentLanguageId();
 
@@ -186,7 +204,30 @@ class SeoData extends WireData
         return $defaultConfig[$key] ?? null;
     }
 
-    private function getCurrentLanguageId()
+    /**
+     * Encode the value to be used in a meta tag.
+     *
+     * First strips HTML tags and newlines, then encode any entities.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    protected function encode($value)
+    {
+        $sanitizer = $this->wire('sanitizer');
+
+        return $sanitizer->entities1(
+            $sanitizer->text($value, ['maxLength' => 0])
+        );
+    }
+
+    protected function containsPlaceholder($value)
+    {
+        return preg_match('/\{.*\}/', $value);
+    }
+
+    protected function getCurrentLanguageId()
     {
         $currentLanguage = $this->wire('user')->language;
 

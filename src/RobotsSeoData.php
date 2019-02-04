@@ -2,26 +2,36 @@
 
 namespace SeoMaestro;
 
-use ProcessWire\Wire;
-use function ProcessWire\wirePopulateStringTags;
-
 /**
- * Renderer for robots metatags.
+ * Seo data of the "robots" group.
  */
-class RobotsDataRenderer extends Wire implements SeoDataRendererInterface
+class RobotsSeoData extends SeoDataBase
 {
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function ___renderValue($name, $value, PageValue $pageValue)
+    protected $group = 'robots';
+
+    /**
+     * @inheritdoc
+     */
+    protected function renderValue($name, $value)
     {
-        return $value;
+        return (int) $value;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function ___renderMetatags(array $data, PageValue $pageValue)
+    protected function sanitizeValue($name, $value)
+    {
+        return (int) $value;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function ___renderMetatags(array $data)
     {
         $tags = [];
         $contents = [];

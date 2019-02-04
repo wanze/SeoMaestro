@@ -3,29 +3,31 @@
 namespace SeoMaestro;
 
 use ProcessWire\Pageimages;
-use ProcessWire\Wire;
 use function ProcessWire\wirePopulateStringTags;
 
 /**
- * Renderer for the opengraph metatags.
+ * Seo data of the "opengraph" group.
  */
-class OpengraphDataRenderer extends Wire implements SeoDataRendererInterface
+class OpengraphSeoData extends SeoDataBase
 {
-    use SeoDataRendererTrait;
+    /**
+     * @var string
+     */
+    protected $group = 'opengraph';
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function ___renderValue($name, $value, PageValue $pageValue)
+    protected function renderValue($name, $value)
     {
         if ($name === 'image') {
             // If the image is a placeholder, resolve the image url from the PageImage.
             $fieldName = $this->getFieldNameFromPlaceholder($value);
             if ($fieldName === false) {
-                return $value;
+                return $this->encode($value);
             }
 
-            $pageImage = $this->getPageImage($pageValue->getPage(), $fieldName);
+            $pageImage = $this->getPageImage($fieldName);
             if ($pageImage === null) {
                 return '';
             }
@@ -34,37 +36,44 @@ class OpengraphDataRenderer extends Wire implements SeoDataRendererInterface
         }
 
         if ($this->containsPlaceholder($value)) {
-            return wirePopulateStringTags($value, $pageValue->getPage());
+            return wirePopulateStringTags($value, $this->pageValue->getPage());
         }
 
-        return $value;
+        return $this->encode($value);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function ___renderMetatags(array $data, PageValue $pageValue)
+    protected function sanitizeValue($name, $value)
+    {
+        return (string) $value;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function ___renderMetatags(array $data)
     {
         $tags = [];
 
-        foreach ($data as $name => $value) {
-            $renderedValue = $this->renderValue($name, $value, $pageValue);
-            if (!$renderedValue) {
+        foreach ($data as $name => $unformattedValue) {
+            $value = $this->renderValue($name, $unformattedValue);
+            if (!$value) {
                 continue;
             }
 
             $metaName = $this->getMetaName($name);
-            $encodedValue = $this->encode($renderedValue);
 
-            $tags[] = $this->renderTag($metaName, $encodedValue);
+            $tags[] = $this->renderTag($metaName, $value);
 
             // Add additional image meta tags for the type, width and height.
             if ($name === 'image') {
-                $fieldName = $this->getFieldNameFromPlaceholder($value);
+                $fieldName = $this->getFieldNameFromPlaceholder($unformattedValue);
 
                 if ($fieldName === false) {
                     // External image source.
-                    list($width, $height, $typeId) = @getimagesize($renderedValue);
+                    list($width, $height, $typeId) = @getimagesize($value);
 
                     if ($width !== null) {
                         $tags[] = $this->renderTag('image:type', sprintf('image/%s', $this->getImageType($typeId)));
@@ -73,7 +82,7 @@ class OpengraphDataRenderer extends Wire implements SeoDataRendererInterface
                     }
                 } else {
                     // Image from a PageImage object.
-                    $pageImage = $this->getPageImage($pageValue->getPage(), $fieldName);
+                    $pageImage = $this->getPageImage($fieldName);
                     if ($pageImage === null) {
                         continue;
                     }
@@ -86,7 +95,7 @@ class OpengraphDataRenderer extends Wire implements SeoDataRendererInterface
             }
         }
 
-        $tags[] = $this->renderTag('url', $pageValue->getPage()->httpUrl);
+        $tags[] = $this->renderTag('url', $this->pageValue->getPage()->httpUrl);
 
         return $tags;
     }
@@ -118,14 +127,13 @@ class OpengraphDataRenderer extends Wire implements SeoDataRendererInterface
     }
 
     /**
-     * @param \ProcessWire\Page $page
      * @param string $fieldName
      *
      * @return \ProcessWire\Pageimage|null
      */
-    private function getPageImage($page, $fieldName)
+    private function getPageImage($fieldName)
     {
-        $pageImages = $page->getUnformatted($fieldName);
+        $pageImages = $this->pageValue->getPage()->getUnformatted($fieldName);
 
         if (!$pageImages instanceof Pageimages || !$pageImages->count()) {
             return null;

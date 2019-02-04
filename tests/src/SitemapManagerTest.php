@@ -3,6 +3,7 @@
 namespace SeoMaestro\Test;
 
 use ProcessWire\HookEvent;
+use ProcessWire\Page;
 use SeoMaestro\SitemapManager;
 
 /**
@@ -89,14 +90,17 @@ class SitemapManagerTest extends FunctionalTestCase
         $page = $this->createPage($this->template, '/', 'sitemap-should-not-contain-pages-not-viewable');
 
         $this->sitemapManager->generate($this->sitemap);
-        $this->assertSitemapContains($page->get('name'), true);
+        $this->assertSitemapContains($page->get('name'));
 
-        $this->wire()->addHookAfter('Page::viewable', function (HookEvent $event) use ($page) {
-            $hookedPage = $event->object;
-            if ($hookedPage->id == $page->id) {
-                $event->return = false;
-            }
-        });
+        $page->addStatus(Page::statusUnpublished);
+        $page->save();
+
+//        $this->wire()->addHookAfter('Page::viewable', function (HookEvent $event) use ($page) {
+//            $hookedPage = $event->object;
+//            if ($hookedPage->id == $page->id) {
+//                $event->return = false;
+//            }
+//        });
 
         $this->sitemapManager->generate($this->sitemap);
         $this->assertSitemapNotContains($page->get('name'));
@@ -198,12 +202,10 @@ class SitemapManagerTest extends FunctionalTestCase
     private function assertSitemapNotContains($string)
     {
         $this->assertNotContains($string, file_get_contents($this->sitemap));
-        //        $this->assertEquals($expected, (bool)strpos(file_get_contents($this->sitemap), $string));
     }
 
     private function assertSitemapContains($string)
     {
         $this->assertContains($string, file_get_contents($this->sitemap));
-//        $this->assertEquals($expected, (bool)strpos(file_get_contents($this->sitemap), $string));
     }
 }

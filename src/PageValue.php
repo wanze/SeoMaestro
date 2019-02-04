@@ -124,22 +124,14 @@ class PageValue extends WireData
     /**
      * @param string $group
      *
-     * @return \SeoMaestro\SeoData
+     * @return \SeoMaestro\SeoDataInterface
      */
     private function getSeoData($group)
     {
-        // There is only ever one instance of a renderer needed per group, so we cache them here.
-        static $renderers = [];
-
-        if (!isset($renderers[$group])) {
-            $rendererClass = sprintf('\\SeoMaestro\\%sDataRenderer', ucfirst($group));
-            $renderers[$group] = $this->wire(new $rendererClass());
-        }
-
         if (!isset($this->seoData[$group])) {
-            $renderer = $renderers[$group];
+            $class = sprintf('\\SeoMaestro\\%sSeoData', ucfirst($group));
             $data = $this->getDataOfGroup($group);
-            $seoData = $this->wire(new SeoData($this, $group, $data, $renderer));
+            $seoData = $this->wire(new $class($this, $data));
             $this->seoData[$group] = $seoData;
         }
 
