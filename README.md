@@ -20,7 +20,7 @@ A ProcessWire module helping you to manage SEO related tasks like a boss! ðŸ˜Žâœ
 Install the module from the [modules directory]() or with Composer:
 
 ```
-composer require wanze/processwire-seomaestro:^0.1 --no-dev
+composer require wanze/seo-maestro:^0.1
 ```
 
 ## Configuration

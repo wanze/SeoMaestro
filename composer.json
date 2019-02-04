@@ -1,5 +1,5 @@
 {
-    "name": "wanze/processwire-seomaestro",
+    "name": "wanze/seo-maestro",
     "description": "Seo Maestro allows to easily manage your page's meta data and sitemap.",
     "type": "pw-module",
     "keywords": ["processwire", "seo", "metatags", "sitemap"],
