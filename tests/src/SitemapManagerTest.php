@@ -38,7 +38,7 @@ class SitemapManagerTest extends FunctionalTestCase
         $fieldtype = $this->wire('fieldtypes')->get('FieldtypeSeoMaestro');
         $field = $this->createField($fieldtype, self::FIELD_NAME);
 
-        $this->template = $this->createTemplate(self::TEMPLATE_NAME, dirname(__DIR__) . '/templates/sitemap-manager.php');
+        $this->template = $this->createTemplate(self::TEMPLATE_NAME, dirname(__DIR__) . '/templates/dummy.php');
         $this->template->fieldgroup->add($field);
         $this->template->save();
 

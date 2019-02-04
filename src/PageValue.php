@@ -64,7 +64,7 @@ class PageValue extends WireData
     {
         static $regex = null;
 
-        // Make sure to only allow keys of seo data, e.g. meta_title.
+        // Make sure to only allow keys of valid seo data, e.g. meta_title.
         if ($regex === null) {
             $seoFields = implode('|', array_keys($this->field->type->getSeoData()));
             $languageIds = $this->wire('languages') ? $this->wire('languages')->getAll()->implode('|', 'id') : '';

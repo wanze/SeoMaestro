@@ -5,7 +5,7 @@ namespace SeoMaestro\Test;
 use ProcessWire\WireException;
 
 /**
- * Tests for the API of SeoMaestro.
+ * Tests for the API provided by SeoMaestro.
  */
 class ApiTest extends FunctionalTestCase
 {
@@ -29,7 +29,7 @@ class ApiTest extends FunctionalTestCase
         $fieldtype = $this->wire('fieldtypes')->get('FieldtypeSeoMaestro');
         $this->field = $this->createField($fieldtype, self::FIELD_NAME);
 
-        $this->template = $this->createTemplate(self::TEMPLATE_NAME, dirname(__DIR__) . '/templates/api.php');
+        $this->template = $this->createTemplate(self::TEMPLATE_NAME, dirname(__DIR__) . '/templates/dummy.php');
         $this->template->fieldgroup->add($this->field);
         $this->template->save();
     }

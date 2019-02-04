@@ -63,6 +63,11 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
     {
         return [
             'data' => json_encode($value->getArray()),
+            'meta_inherit' => $this->isAllDataInherited('meta', $value) ? 1 : 0,
+            'opengraph_inherit' => $this->isAllDataInherited('opengraph', $value) ? 1 : 0,
+            'twitter_inherit' => $this->isAllDataInherited('twitter', $value) ? 1 : 0,
+            'robots_inherit' => $this->isAllDataInherited('robots', $value) ? 1 : 0,
+            'sitemap_inherit' => $this->isAllDataInherited('sitemap', $value) ? 1 : 0,
             'sitemap_include' => $value->get('sitemap')->include ? 1 : 0,
         ];
     }
@@ -86,10 +91,19 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
         $schema = parent::getDatabaseSchema($field);
 
         $schema['data'] = 'text NOT NULL';
+
+        // Add flags to quickly lookup information with selectors.
+        // The "inherit" flags are true, if all data of a group is inherited by a page.
+        $schema['meta_inherit'] = 'tinyint UNSIGNED NOT NULL';
+        $schema['opengraph_inherit'] = 'tinyint UNSIGNED NOT NULL';
+        $schema['twitter_inherit'] = 'tinyint UNSIGNED NOT NULL';
+        $schema['robots_inherit'] = 'tinyint UNSIGNED NOT NULL';
+        $schema['sitemap_inherit'] = 'tinyint UNSIGNED NOT NULL';
+
+        // Is the page included in the sitemap?
         $schema['sitemap_include'] = 'tinyint UNSIGNED NOT NULL';
 
-        // Add an index for the sitemap_include flag.
-        $schema['keys']['sitemap_include'] = 'KEY sitemap_include (`sitemap_include`)';
+        // Remove the index on the data column.
         unset($schema['keys']['data']);
 
         return $schema;
@@ -221,6 +235,27 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
             'sitemap_priority' => '0.5',
             'sitemap_changeFrequency' => 'monthly',
         ];
+    }
+
+    /**
+     * Check if all data of the given group is inherited in the given page value.
+     *
+     * @param string $group
+     * @param \SeoMaestro\PageValue $pageValue
+     *
+     * @return bool
+     */
+    private function isAllDataInherited($group, PageValue $pageValue)
+    {
+        $data = $this->getSeoDataByGroup()[$group];
+
+        foreach (array_keys($data) as $name) {
+            if ($pageValue->get(sprintf('%s_%s', $group, $name)) !== 'inherit') {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
