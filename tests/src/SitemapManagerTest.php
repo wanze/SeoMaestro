@@ -57,12 +57,12 @@ class SitemapManagerTest extends FunctionalTestCase
      */
     public function sitemap_should_contain_included_pages()
     {
-        $page = $this->createPage($this->template, '/', 'my-awesome-page');
+        $page = $this->createPage($this->template, '/', 'sitemap-should-contain-included-pages');
 
         $this->sitemapManager->generate($this->sitemap);
 
         $this->assertFileExists($this->sitemap);
-        $this->assertSitemapContains($page->get('name'), true);
+        $this->assertSitemapContains($page->get('name'));
     }
 
     /**
@@ -71,13 +71,13 @@ class SitemapManagerTest extends FunctionalTestCase
      */
     public function sitemap_should_not_contain_excluded_pages()
     {
-        $page = $this->createPage($this->template, '/');
+        $page = $this->createPage($this->template, '/', 'sitemap-should-not-contain-excluded-pages');
         $page->get(self::FIELD_NAME)->sitemap->include = 0;
         $page->save();
 
         $this->sitemapManager->generate($this->sitemap);
 
-        $this->assertSitemapContains($page->get('name'), false);
+        $this->assertSitemapNotContains($page->get('name'));
     }
 
     /**
@@ -86,20 +86,20 @@ class SitemapManagerTest extends FunctionalTestCase
      */
     public function sitemap_should_not_contain_pages_not_viewable()
     {
-        $page = $this->createPage($this->template, '/');
+        $page = $this->createPage($this->template, '/', 'sitemap-should-not-contain-pages-not-viewable');
 
         $this->sitemapManager->generate($this->sitemap);
         $this->assertSitemapContains($page->get('name'), true);
 
         $this->wire()->addHookAfter('Page::viewable', function (HookEvent $event) use ($page) {
             $hookedPage = $event->object;
-            if ($hookedPage->id === $page->id) {
+            if ($hookedPage->id == $page->id) {
                 $event->return = false;
             }
         });
 
         $this->sitemapManager->generate($this->sitemap);
-        $this->assertSitemapContains($page->get('name'), false);
+        $this->assertSitemapNotContains($page->get('name'));
     }
 
     /**
@@ -114,11 +114,11 @@ class SitemapManagerTest extends FunctionalTestCase
 
         $this->sitemapManager->set('baseUrl', '');
         $this->sitemapManager->generate($this->sitemap);
-        $this->assertSitemapContains($baseUrl, false);
+        $this->assertSitemapNotContains($baseUrl);
 
         $this->sitemapManager->set('baseUrl', $baseUrl);
         $this->sitemapManager->generate($this->sitemap);
-        $this->assertSitemapContains($baseUrl, true);
+        $this->assertSitemapContains($baseUrl);
     }
 
     /**
@@ -134,8 +134,8 @@ class SitemapManagerTest extends FunctionalTestCase
 
         $this->sitemapManager->generate($this->sitemap);
 
-        $this->assertSitemapContains('0.333', true);
-        $this->assertSitemapContains('yearly', true);
+        $this->assertSitemapContains('0.333');
+        $this->assertSitemapContains('yearly');
     }
 
     /**
@@ -150,15 +150,15 @@ class SitemapManagerTest extends FunctionalTestCase
         $page->save();
 
         $this->sitemapManager->generate($this->sitemap);
-        $this->assertSitemapContains('the-english-page-name', true);
-        $this->assertSitemapContains('the-german-page-name', false);
+        $this->assertSitemapContains('the-english-page-name');
+        $this->assertSitemapNotContains('the-german-page-name');
 
         $page->set("status{$de->id}", true);
         $page->save();
 
         $this->sitemapManager->generate($this->sitemap);
-        $this->assertSitemapContains('the-english-page-name', true);
-        $this->assertSitemapContains('the-german-page-name', true);
+        $this->assertSitemapContains('the-english-page-name');
+        $this->assertSitemapContains('the-german-page-name');
     }
 
     /**
@@ -167,12 +167,12 @@ class SitemapManagerTest extends FunctionalTestCase
      */
     public function sitemap_should_not_contain_pages_excluded_with_hook()
     {
-        $page1 = $this->createPage($this->template, '/');
-        $page2 = $this->createPage($this->template, '/');
+        $page1 = $this->createPage($this->template, '/', 'sitemap-should-not-contain-pages-excluded-with-hook-1');
+        $page2 = $this->createPage($this->template, '/', 'sitemap-should-not-contain-pages-excluded-with-hook-2');
 
         $this->sitemapManager->generate($this->sitemap);
-        $this->assertSitemapContains($page1->get('name'), true);
-        $this->assertSitemapContains($page2->get('name'), true);
+        $this->assertSitemapContains($page1->get('name'));
+        $this->assertSitemapContains($page2->get('name'));
 
         // Exclude $page2 by hooking after SitemapManager::getExcludedPages
         $this->sitemapManager->addHookAfter('getExcludedPages', function (HookEvent $event) use ($page2) {
@@ -182,7 +182,8 @@ class SitemapManagerTest extends FunctionalTestCase
         });
 
         $this->sitemapManager->generate($this->sitemap);
-        $this->assertSitemapContains($page2->get('name'), false);
+        $this->assertSitemapContains($page1->get('name'));
+        $this->assertSitemapNotContains($page2->get('name'));
     }
 
     protected function tearDown()
@@ -194,14 +195,15 @@ class SitemapManagerTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * Assert that the generated contains a string.
-     *
-     * @param string $string
-     * @param bool $expected
-     */
-    private function assertSitemapContains($string, $expected)
+    private function assertSitemapNotContains($string)
     {
-        $this->assertEquals($expected, (bool)strpos(file_get_contents($this->sitemap), $string));
+        $this->assertNotContains($string, file_get_contents($this->sitemap));
+        //        $this->assertEquals($expected, (bool)strpos(file_get_contents($this->sitemap), $string));
+    }
+
+    private function assertSitemapContains($string)
+    {
+        $this->assertContains($string, file_get_contents($this->sitemap));
+//        $this->assertEquals($expected, (bool)strpos(file_get_contents($this->sitemap), $string));
     }
 }

@@ -2,6 +2,8 @@
 
 namespace SeoMaestro\Test;
 
+use ProcessWire\WireException;
+
 /**
  * Tests for the API of SeoMaestro.
  */
@@ -76,11 +78,53 @@ class ApiTest extends FunctionalTestCase
         $this->assertEquals(0, $page->get(self::FIELD_NAME)->sitemap->include);
     }
 
+    /**
+     * @test
+     * @dataProvider invalidDataDataProvider
+     */
+    public function it_should_throw_an_exception_when_setting_invalid_data($group, $name)
+    {
+        $page = $this->createPage($this->template, '/');
+
+        $this->expectException(WireException::class);
+
+        $page->get(self::FIELD_NAME)->get($group)->set($name, '');
+    }
+
+    public function invalidDataDataProvider()
+    {
+        return [
+            [
+                'meta',
+                'tiitle',
+            ],
+            [
+                'opengraph',
+                'description123'
+            ],
+            [
+                'twitter',
+                'username',
+            ],
+            [
+                'robots',
+                'robots',
+            ],
+            [
+                'sitemap',
+                'include1'
+            ],
+        ];
+    }
+
     public function test_multi_language()
     {
         $page = $this->createPage($this->template, '/');
         $page->title = 'A page title EN';
+
+        $this->wire('user')->language = $this->wire('languages')->getDefault();
         $page->get(self::FIELD_NAME)->meta->title = 'Overridden meta title EN';
+
         $page->save();
 
         $this->assertEquals('Overridden meta title EN', $page->get(self::FIELD_NAME)->meta->title);
@@ -191,6 +235,40 @@ class ApiTest extends FunctionalTestCase
 
         $page->get(self::FIELD_NAME)->robots->noFollow = 1;
         $this->assertEquals('<meta name="robots" content="noindex, nofollow">', $page->get(self::FIELD_NAME)->robots->render());
+    }
+
+    public function test_render_multi_language()
+    {
+        $page = $this->createPage($this->template, '/', 'test-render-multi-language');
+
+        $this->wire('user')->language = $this->wire('languages')->getDefault();
+        $page->get(self::FIELD_NAME)->meta->description = 'Meta description EN';
+
+        $this->wire('user')->language = $this->wire('languages')->get('de');
+        $page->get(self::FIELD_NAME)->meta->description = 'Meta description DE';
+
+        $this->assertContains('Meta description DE', $page->get(self::FIELD_NAME)->render());
+        $this->assertNotContains('Meta description EN', $page->get(self::FIELD_NAME)->render());
+
+        $this->wire('user')->language = $this->wire('languages')->getDefault();
+
+        $this->assertNotContains('Meta description DE', $page->get(self::FIELD_NAME)->render());
+        $this->assertContains('Meta description EN', $page->get(self::FIELD_NAME)->render());
+    }
+
+    public function test_template_context()
+    {
+        $page = $this->createPage($this->template, '/', 'test-template-context');
+        $page->set('title', 'Seo Maestro');
+
+        $this->assertEquals('Seo Maestro', $page->get(self::FIELD_NAME)->meta->title);
+
+        // Set the meta title in the context of the template.
+        $field = $this->template->fieldgroup->getField($this->field, true);
+        $field->set('meta_title', '{title} in the context of a template');
+        $this->wire('fields')->saveFieldgroupContext($field, $this->template->fieldgroup);
+
+        $this->assertEquals('Seo Maestro in the context of a template', $page->get(self::FIELD_NAME)->meta->title);
     }
 
     private function addImageFieldToTemplate($name)
