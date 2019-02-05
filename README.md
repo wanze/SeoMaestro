@@ -5,8 +5,9 @@
 
 A ProcessWire module helping you to manage SEO related tasks like a boss! 😎✌️
 
-* Automatically generates and maintains a sitemap from your pages.
+* Automatically generates and maintains a XML sitemap from your pages.
 * Includes a Fieldtype and Inputfield to manage sitemap settings and meta data for pages (title, description, opengraph, twitter etc.).
+* Multi language support for the sitemap and meta data.
 * Configure default values for meta data on template level and let pages inherit or overwrite them individually.
 * Map existing fields to meta data, reducing the need to duplicate content.
 
@@ -20,7 +21,7 @@ A ProcessWire module helping you to manage SEO related tasks like a boss! 😎�
 Install the module from the [modules directory]() or with Composer:
 
 ```
-composer require wanze/seo-maestro:^0.1
+composer require wanze/seo-maestro
 ```
 
 ## Configuration
@@ -55,7 +56,7 @@ one is used. For example, `{images}` would pick the first image from the `images
 
 ### Sitemap Generation
 
-If enabled, the module hooks after `ProcessWire::finished` to generate the sitemap after the request is finished.
+If enabled, the module hooks after `ProcessWire::finished` to generate the XML sitemap after the request is finished.
 
 * The sitemap is only generated if the current user is logged in and the current page is an admin page.
 * It only includes pages of templates having a _Seo Maestro_ field, in order to read the sitemap settings.
@@ -76,14 +77,17 @@ echo $page->seo->opengraph->render();
 
 ## API
 
-The module offers an _easy-to-use_ API to modify meta data and sitemap configuration for pages:
+The module offers an _easy-to-use_ API to retrieve and modify meta data and sitemap configuration for pages:
 
 ```php
+// Get a single value.
+echo $page->seo->meta->description;
+
 $page->of(false);
 
-// Set values as strings or placeholders or combine both.
-$page->seo->meta->title = '{title}';
+// Set values as strings or placeholders to reference the value of another field.
 $page->seo->opengraph->description = 'A description for opengraph';
+$page->seo->meta->title = '{title}';
 
 // Inherit the Twitter card value from the field configuration.
 $page->seo->twitter->card = 'inherit';
@@ -95,7 +99,7 @@ $page->seo->sitemap->priority = 0.9;
 $page->save();
 ```
 
-Values are always set for the current language. Switch the language to set values in a different language:
+Values are always set for the current language. Switch the user's language to set values in a different language:
 
 ```php
 $current = $user->language;
@@ -107,4 +111,26 @@ $page->seo->opengraph->title = 'Hallo Welt';
 $page->save();
 
 $user->language = $current;
+```
+
+### Available Selectors
+
+The _Seo Maestro_ fieldtype does not support to query meta data with selectors, e.g. `seo.meta.title%=foo` won't work.
+All meta data is stored as JSON, allowing to add new data anytime without the need for database migrations. However, the
+module stores some useful flags whenever a page is saved, and these flags can be used in selectors:
+
+* `sitemap_include` to quickly query if a page is included or excluded in the sitemap.
+* `<group>_inherit` is set to `1`, if a page inherits _all_ meta data of a given group
+(`meta`, `opengraph`, `robots`, `twitter`, `sitemap`).
+
+**Examples**
+
+Find all pages included in the sitemap:
+```
+$pages->find('seo.sitemap_include=1');
+```
+
+Find all pages excluded from the sitemap inheriting all meta and opengraph data.
+```
+$pages->find('seo.sitemap_include=0,seo.meta_inherit=1,seo.opengraph_inherit=1');
 ```
