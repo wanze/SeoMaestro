@@ -46,7 +46,7 @@ class SitemapSeoData extends SeoDataBase
     /**
      * @inheritdoc
      */
-    protected function ___renderMetatags(array $data)
+    protected function renderMetatags(array $data)
     {
         return [];
     }

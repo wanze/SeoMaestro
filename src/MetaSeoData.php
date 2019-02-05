@@ -20,7 +20,7 @@ class MetaSeoData extends SeoDataBase
     protected function renderValue($name, $value)
     {
         if ($this->containsPlaceholder($value)) {
-            return wirePopulateStringTags($value, $this->pageValue->getPage());
+            return wirePopulateStringTags($value, $this->pageFieldValue->getPage());
         }
 
         return $this->encode($value);
@@ -37,19 +37,29 @@ class MetaSeoData extends SeoDataBase
     /**
      * @inheritdoc
      */
-    protected function ___renderMetatags(array $data)
+    protected function renderMetatags(array $data)
     {
         $tags = [];
 
-        foreach ($data as $name => $unformattedValue) {
-            $value = $this->renderValue($name, $unformattedValue);
+        foreach ($data as $name) {
+            $value = $this->get($name);
             if (!$value) {
                 continue;
             }
 
-            $tags[] = sprintf('<meta name="%s" value="%s">', $name, $value);
+            $tags[$name] = ($name === 'title') ? $this->renderTitleTag($value) : $this->renderTag($name, $value);
         }
 
         return $tags;
+    }
+
+    private function renderTitleTag($value)
+    {
+        return sprintf('<title>%s</title>', $value);
+    }
+
+    private function renderTag($name, $value)
+    {
+        return sprintf('<meta name="%s" value="%s">', $name, $value);
     }
 }

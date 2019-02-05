@@ -12,7 +12,7 @@ use ProcessWire\WireException;
 interface SeoDataInterface
 {
     /**
-     * Get a value with the given name.
+     * Get a formatted value with the given name.
      *
      * @param string $name
      *
@@ -21,7 +21,7 @@ interface SeoDataInterface
     public function get($name);
 
     /**
-     * Get the inherited value from the field's configuration.
+     * Get a formatted value, inherited from the field's configuration.
      *
      * @param string $name
      *
@@ -53,5 +53,5 @@ interface SeoDataInterface
      *
      * @return string
      */
-    public function ___render();
+    public function render();
 }

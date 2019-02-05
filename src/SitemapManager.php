@@ -12,9 +12,9 @@ use ProcessWire\WireData;
 class SitemapManager extends WireData
 {
     /**
-     * @param array $moduleConfig
+     * @param array $config
      */
-    public function __construct(array $moduleConfig)
+    public function __construct(array $config)
     {
         parent::__construct();
 
@@ -23,7 +23,7 @@ class SitemapManager extends WireData
                 'baseUrl' => '',
                 'defaultLanguage' => 'en',
             ],
-            $moduleConfig
+            $config
         );
     }
 

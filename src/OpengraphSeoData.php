@@ -36,7 +36,7 @@ class OpengraphSeoData extends SeoDataBase
         }
 
         if ($this->containsPlaceholder($value)) {
-            return wirePopulateStringTags($value, $this->pageValue->getPage());
+            return wirePopulateStringTags($value, $this->pageFieldValue->getPage());
         }
 
         return $this->encode($value);
@@ -53,32 +53,32 @@ class OpengraphSeoData extends SeoDataBase
     /**
      * @inheritdoc
      */
-    protected function ___renderMetatags(array $data)
+    protected function renderMetatags(array $data)
     {
         $tags = [];
 
-        foreach ($data as $name => $unformattedValue) {
-            $value = $this->renderValue($name, $unformattedValue);
+        foreach ($data as $name) {
+            $value = $this->get($name);
             if (!$value) {
                 continue;
             }
 
             $metaName = $this->getMetaName($name);
 
-            $tags[] = $this->renderTag($metaName, $value);
+            $tags[$name] = $this->renderTag($metaName, $value);
 
             // Add additional image meta tags for the type, width and height.
             if ($name === 'image') {
-                $fieldName = $this->getFieldNameFromPlaceholder($unformattedValue);
+                $fieldName = $this->getFieldNameFromPlaceholder($this->getUnformatted($name));
 
                 if ($fieldName === false) {
                     // External image source.
                     list($width, $height, $typeId) = @getimagesize($value);
 
                     if ($width !== null) {
-                        $tags[] = $this->renderTag('image:type', sprintf('image/%s', $this->getImageType($typeId)));
-                        $tags[] = $this->renderTag('image:width', $width);
-                        $tags[] = $this->renderTag('image:height', $height);
+                        $tags['imageType'] = $this->renderTag('image:type', sprintf('image/%s', $this->getImageType($typeId)));
+                        $tags['imageWidth'] = $this->renderTag('image:width', $width);
+                        $tags['imageHeight'] = $this->renderTag('image:height', $height);
                     }
                 } else {
                     // Image from a PageImage object.
@@ -88,14 +88,14 @@ class OpengraphSeoData extends SeoDataBase
                     }
 
                     $ext = $pageImage->ext === 'jpg' ? 'jpeg' : $pageImage->ext;
-                    $tags[] = $this->renderTag('image:type', sprintf('image/%s', $ext));
-                    $tags[] = $this->renderTag('image:width', $pageImage->width);
-                    $tags[] = $this->renderTag('image:height', $pageImage->height);
+                    $tags['imageType'] = $this->renderTag('image:type', sprintf('image/%s', $ext));
+                    $tags['imageWidth'] = $this->renderTag('image:width', $pageImage->width);
+                    $tags['imageHeight'] = $this->renderTag('image:height', $pageImage->height);
                 }
             }
         }
 
-        $tags[] = $this->renderTag('url', $this->pageValue->getPage()->httpUrl);
+        $tags['url'] = $this->renderTag('url', $this->pageFieldValue->getPage()->httpUrl);
 
         return $tags;
     }
@@ -133,7 +133,7 @@ class OpengraphSeoData extends SeoDataBase
      */
     private function getPageImage($fieldName)
     {
-        $pageImages = $this->pageValue->getPage()->getUnformatted($fieldName);
+        $pageImages = $this->pageFieldValue->getPage()->getUnformatted($fieldName);
 
         if (!$pageImages instanceof Pageimages || !$pageImages->count()) {
             return null;

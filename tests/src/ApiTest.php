@@ -189,7 +189,7 @@ class ApiTest extends FunctionalTestCase
         $page->get(self::FIELD_NAME)->meta->description = "This <a href='/foo'>string</a> <b>should</b><br> be sanitized and encode'd correctly\n";
         $page->save();
 
-        $expected = "<meta name=\"title\" value=\"Seo Maestro\">\n<meta name=\"description\" value=\"This string should be sanitized and encode&#039;d correctly\">";
+        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" value=\"This string should be sanitized and encode&#039;d correctly\">";
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
 
         $page->get(self::FIELD_NAME)->meta->keywords = 'Seo Maestro, ProcessWire, Module';

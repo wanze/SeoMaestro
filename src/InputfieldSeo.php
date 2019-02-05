@@ -22,16 +22,16 @@ class InputfieldSeo extends InputfieldFieldset
     private $name;
 
     /**
-     * @var \SeoMaestro\PageValue
+     * @var \SeoMaestro\PageFieldValue
      */
     private $pageValue;
 
     /**
      * @param string $name
-     * @param \SeoMaestro\PageValue $pageValue
+     * @param \SeoMaestro\PageFieldValue $pageValue
      * @param \ProcessWire\Inputfield $inputfield
      */
-    public function __construct($name, PageValue $pageValue, Inputfield $inputfield)
+    public function __construct($name, PageFieldValue $pageValue, Inputfield $inputfield)
     {
         parent::__construct();
 

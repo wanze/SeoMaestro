@@ -30,7 +30,7 @@ class TwitterSeoData extends SeoDataBase
     protected function renderValue($name, $value)
     {
         if ($this->containsPlaceholder($value)) {
-            return wirePopulateStringTags($value, $this->pageValue->getPage());
+            return wirePopulateStringTags($value, $this->pageFieldValue->getPage());
         }
 
         return $this->encode($value);
@@ -51,17 +51,17 @@ class TwitterSeoData extends SeoDataBase
     /**
      * @inheritdoc
      */
-    protected function ___renderMetatags(array $data)
+    protected function renderMetatags(array $data)
     {
         $tags = [];
 
-        foreach ($data as $name => $unformattedValue) {
-            $value = $this->renderValue($name, $unformattedValue);
+        foreach ($data as $name) {
+            $value = $this->get($name);
             if (!$value) {
                 continue;
             }
 
-            $tags[] = sprintf('<meta name="twitter:%s" value="%s">', $name, $value);
+            $tags[$name] = sprintf('<meta name="twitter:%s" value="%s">', $name, $value);
         }
 
         return $tags;

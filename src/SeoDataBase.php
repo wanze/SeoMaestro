@@ -12,9 +12,9 @@ use ProcessWire\WireException;
 abstract class SeoDataBase extends WireData implements SeoDataInterface
 {
     /**
-     * @var \SeoMaestro\PageValue
+     * @var \SeoMaestro\PageFieldValue
      */
-    protected $pageValue;
+    protected $pageFieldValue;
 
     /**
      * @var string
@@ -22,14 +22,14 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
     protected $group;
 
     /**
-     * @param \SeoMaestro\PageValue $pageValue
+     * @param \SeoMaestro\PageFieldValue $pageFieldValue
      * @param array $data
      */
-    public function __construct(PageValue $pageValue, array $data)
+    public function __construct(PageFieldValue $pageFieldValue, array $data)
     {
         parent::__construct();
 
-        $this->pageValue = $pageValue;
+        $this->pageFieldValue = $pageFieldValue;
         $this->data = $data;
     }
 
@@ -40,7 +40,11 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
     {
         $value = $this->lookupUnformattedValue($name);
 
-        return $this->renderValue($name, $value);
+        $value = $this->renderValue($name, $value);
+
+        // Allow hooks to transform any rendered value.
+        return $this->wire('modules')->get('SeoMaestro')
+            ->renderSeoDataValue($this->group, $name, $value);
     }
 
     /**
@@ -78,12 +82,12 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
 
         // Propagate the new value back to the page value.
         $keyPageField = sprintf('%s_%s%s', $this->group, $name, $langId);
-        $this->pageValue->set($keyPageField, $value);
+        $this->pageFieldValue->set($keyPageField, $value);
 
-        if ($this->pageValue->isChanged()) {
+        if ($this->pageFieldValue->isChanged()) {
             // Notify the page about the change.
-            $field = $this->pageValue->getField()->name;
-            $this->pageValue->getPage()->trackChange($field);
+            $field = $this->pageFieldValue->getField()->name;
+            $this->pageFieldValue->getPage()->trackChange($field);
         }
 
         return parent::set($name . $langId, $value);
@@ -94,19 +98,20 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
      *
      * @return string
      */
-    public function ___render()
+    public function render()
     {
-        $data = [];
-        foreach (array_keys($this->data) as $name) {
-            // Skip language values.
-            if (preg_match('/.*\d{4}$/', $name)) {
-                continue;
-            }
+        // Get keys only from the default language.
+        $data = array_filter(array_keys($this->data), function ($name) {
+            return (bool) preg_match('/^[a-zA-z_]*$/', $name);
+        });
 
-            $data[$name] = $this->lookupUnformattedValue($name);
-        }
+        $tags = $this->renderMetatags($data);
 
-        return implode("\n", $this->renderMetatags($data));
+        // Allow hooks to modify any data before transforming to the final output.
+        $tags = $this->wire('modules')->get('SeoMaestro')
+            ->renderMetatags($tags, $this->group);
+
+        return implode("\n", $tags);
     }
 
     /**
@@ -126,7 +131,7 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
      *
      * @return array
      */
-    abstract protected function ___renderMetatags(array $data);
+    abstract protected function renderMetatags(array $data);
 
     /**
      * Sanitize the given unformatted value of the given name.
@@ -179,11 +184,11 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
         $langId = $this->getCurrentLanguageId();
 
         // Get the field in the context of the page's template, config might differ per template.
-        $field = $this->pageValue
+        $field = $this->pageFieldValue
             ->getPage()
             ->get('template')
             ->get('fieldgroup')
-            ->getField($this->pageValue->getField(), true);
+            ->getField($this->pageFieldValue->getField(), true);
 
         $key = sprintf('%s_%s', $this->group, $key);
 

@@ -3,7 +3,7 @@
 namespace ProcessWire;
 
 use SeoMaestro\FormManager;
-use SeoMaestro\PageValue;
+use SeoMaestro\PageFieldValue;
 
 /**
  * A fieldtype storing various metatags and sitemap settings for a page.
@@ -31,7 +31,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
      */
     public function sanitizeValue(Page $page, Field $field, $value)
     {
-        if ($value instanceof PageValue) {
+        if ($value instanceof PageFieldValue) {
             return $value;
         }
 
@@ -43,7 +43,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
      */
     public function getBlankValue(Page $page, Field $field)
     {
-        return $this->wire(new PageValue($page, $field, []));
+        return $this->wire(new PageFieldValue($page, $field, []));
     }
 
     /**
@@ -53,7 +53,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
     {
         $data = $value['data'] ? json_decode($value['data'], true) : [];
 
-        return $this->wire(new PageValue($page, $field, $data));
+        return $this->wire(new PageFieldValue($page, $field, $data));
     }
 
     /**
@@ -241,11 +241,11 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
      * Check if all data of the given group is inherited in the given page value.
      *
      * @param string $group
-     * @param \SeoMaestro\PageValue $pageValue
+     * @param \SeoMaestro\PageFieldValue $pageValue
      *
      * @return bool
      */
-    private function isAllDataInherited($group, PageValue $pageValue)
+    private function isAllDataInherited($group, PageFieldValue $pageValue)
     {
         $data = $this->getSeoDataByGroup()[$group];
 

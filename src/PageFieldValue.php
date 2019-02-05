@@ -10,7 +10,7 @@ use ProcessWire\WireException;
 /**
  * The page field value returned by fields of type "FieldtypeSeoMaestro".
  */
-class PageValue extends WireData
+class PageFieldValue extends WireData
 {
     /**
      * @var \ProcessWire\Page
@@ -83,7 +83,7 @@ class PageValue extends WireData
      *
      * @return string
      */
-    public function ___render()
+    public function render()
     {
         $tags = array_map(function ($group) {
             return $this->getSeoData($group)->render();

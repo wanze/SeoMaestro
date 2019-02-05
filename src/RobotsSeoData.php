@@ -31,19 +31,19 @@ class RobotsSeoData extends SeoDataBase
     /**
      * @inheritdoc
      */
-    protected function ___renderMetatags(array $data)
+    protected function renderMetatags(array $data)
     {
         $tags = [];
         $contents = [];
 
-        foreach ($data as $name => $value) {
-            if ($value) {
+        foreach ($data as $name) {
+            if ($this->get($name)) {
                 $contents[] = strtolower($name);
             }
         }
 
         if (count($contents)) {
-            $tags[] = sprintf('<meta name="robots" content="%s">', implode(', ', $contents));
+            $tags['robots'] = sprintf('<meta name="robots" content="%s">', implode(', ', $contents));
         }
 
         return $tags;

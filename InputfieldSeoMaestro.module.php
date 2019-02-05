@@ -38,7 +38,7 @@ class InputfieldSeoMaestro extends Inputfield
      */
     public function ___processInput(WireInputData $input)
     {
-        /** @var \SeoMaestro\PageValue $pageValue */
+        /** @var \SeoMaestro\PageFieldValue $pageValue */
         $pageValue = $this->attr('value');
         /** @var \ProcessWire\FieldtypeSeoMaestro $fieldtype */
         $fieldtype = $this->field->type;
@@ -90,7 +90,7 @@ class InputfieldSeoMaestro extends Inputfield
      */
     protected function ___buildForm()
     {
-        /** @var \SeoMaestro\PageValue $pageValue */
+        /** @var \SeoMaestro\PageFieldValue $pageValue */
         $pageValue = $this->attr('value');
 
         $formManager = new FormManager();

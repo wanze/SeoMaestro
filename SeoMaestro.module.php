@@ -68,6 +68,33 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
         ];
     }
 
+    /**
+     * Hook to add, remove or modify rendered meta tags of a given group.
+     *
+     * @param array $tags
+     * @param string $group
+     *
+     * @return array
+     */
+    public function ___renderMetatags(array $tags, $group)
+    {
+        return $tags;
+    }
+
+    /**
+     * Hook to modify a meta data, after the value has been rendered.
+     *
+     * @param string $group
+     * @param string $name
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public function ___renderSeoDataValue($group, $name, $value)
+    {
+        return $value;
+    }
+
     private function shouldGenerateSitemap()
     {
         if (!$this->get('sitemapPath')) {
