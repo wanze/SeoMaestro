@@ -2,6 +2,7 @@
 
 namespace SeoMaestro;
 
+use ProcessWire\Inputfield;
 use ProcessWire\InputfieldMarkup;
 
 /**
@@ -22,14 +23,16 @@ class InputfieldGooglePreview extends InputfieldMarkup
         parent::__construct();
 
         $this->pageFieldValue = $pageFieldValue;
+
+        $this->addClass('seomaestro-googlepreview');
+        $this->wrapAttr('data-seomaestro-googlepreview', $this->pageFieldValue->getField()->name);
+        $this->label = 'Google Preview';
+        $this->skipLabel = Inputfield::skipLabelHeader;
     }
 
     public function ___render()
     {
-        $this->addClass('seomaestro-googlepreview');
-        $this->wrapAttr('data-seomaestro-googlepreview', $this->pageFieldValue->getField()->name);
-
-        $this->attr('value', sprintf('<div class="title" data-title="%s">%s</div><div class="link">%s</div><div class="desc" data-desc="%s">%s</div>',
+        $this->attr('value', sprintf('<div class="preview"><div class="title" data-title="%s">%s</div><div class="link">%s</div><div class="desc" data-desc="%s">%s</div></div>',
             $this->pageFieldValue->get('meta')->getInherited('title'),
             $this->pageFieldValue->get('meta')->title,
             $this->pageFieldValue->getPage()->httpUrl,
