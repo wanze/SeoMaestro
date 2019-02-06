@@ -90,9 +90,13 @@ class InputfieldMetaData extends InputfieldFieldset
                 $this->inputfield->attr('checked', '');
             }
 
+            $this->inputfield->attr('value', '');
+
             foreach ($this->wire('languages') ?: [] as $language) {
-                $langId = $language->isDefault() ? '' : $language->id;
-                $this->inputfield->attr("value{$langId}", '');
+                if ($language->isDefault()) {
+                    continue;
+                }
+                $this->inputfield->attr(sprintf('value%s', $language->id), '');
             }
         } else {
             $preview->attr('value', $inheritedValue);

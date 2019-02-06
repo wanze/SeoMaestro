@@ -91,7 +91,10 @@ class SitemapManager extends WireData
      */
     private function getExcludedPages()
     {
-        $excluded = $this->wire('pages')->find($this->wire('config')->http404PageID);
+        $page404 = $this->wire('pages')->get($this->wire('config')->http404PageID);
+
+        $excluded = (new PageArray())
+            ->add($page404);
 
         // Allow to exclude additional pages by hooking SeoMaestro::sitemapAlwaysExclude().
         return $this->wire('modules')->get('SeoMaestro')

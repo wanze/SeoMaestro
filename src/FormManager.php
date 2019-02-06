@@ -19,7 +19,7 @@ class FormManager extends Wire
      *
      * @return InputfieldWrapper
      */
-    public function ___buildForm(array $seoData)
+    public function buildForm(array $seoData)
     {
         $wrapper = $this->wire(new InputfieldWrapper());
 
