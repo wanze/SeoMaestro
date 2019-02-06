@@ -1,5 +1,4 @@
 import '../scss/styles.scss';
-import './components/InputfieldGooglePreview';
 import InputfieldGooglePreview from "./components/InputfieldGooglePreview";
 
 document.addEventListener('DOMContentLoaded', () => {
