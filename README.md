@@ -18,7 +18,7 @@ A ProcessWire module helping you to manage SEO related tasks like a boss! ðŸ˜Žâœ
 
 ## Installation
 
-Install the module from the [modules directory]() or with Composer:
+Install the module from the [modules directory](https://modules.processwire.com/modules/seo-maestro/) or with Composer:
 
 ```
 composer require wanze/seo-maestro
