@@ -2,12 +2,18 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2019-02-06
+
+### Fixed
+
+* Fix Google preview not truncating title and description on initial page load 🤦‍️
+
 ## [0.2.0] - 2019-02-06
 
 ### Fixed
 
 * Fix rendering of the meta title tag
-* Fix encoding of meta data containing placeholders.
+* Fix encoding of meta data containing placeholders
 
 ### Added
 
@@ -27,7 +33,8 @@ allow installations via Composer.
 
 * Initial release of the module 🐣
 
-[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/wanze/SeoMaestro/releases/tag/v0.2.1
 [0.2.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.2.0
 [0.1.1]: https://github.com/wanze/SeoMaestro/releases/tag/v0.1.1
 [0.1.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.1.0

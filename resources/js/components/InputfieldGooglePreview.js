@@ -15,16 +15,21 @@ export default class InputfieldGooglePreview {
     }
 
     init() {
+        this.$title.innerHTML = this.truncateString(this.$title.innerHTML, this.maxLengths.title);
+        this.$desc.innerHTML = this.truncateString(this.$desc.innerHTML, this.maxLengths.desc);
+
         return this.initEventListeners();
     }
 
     initEventListeners() {
-        this.$inputTitle.addEventListener('keyup', () => {
-            this.$title.innerHTML = this.truncateString(this.$inputTitle.value, this.maxLengths.title);
-        });
+        ['keyup', 'blur'].forEach((event) => {
+            this.$inputTitle.addEventListener(event, () => {
+                this.$title.innerHTML = this.truncateString(this.$inputTitle.value, this.maxLengths.title);
+            });
 
-        this.$inputDesc.addEventListener('keyup', () => {
-            this.$desc.innerHTML = this.truncateString(this.$inputDesc.value, this.maxLengths.desc);
+            this.$inputDesc.addEventListener(event, () => {
+                this.$desc.innerHTML = this.truncateString(this.$inputDesc.value, this.maxLengths.desc);
+            });
         });
 
         this.$inputTitleInherit.addEventListener('change', () => {
