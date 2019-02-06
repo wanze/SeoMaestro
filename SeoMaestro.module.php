@@ -30,7 +30,7 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
     public function ready()
     {
         if ($this->shouldGenerateSitemap()) {
-            $this->addHookAfter('ProcessWire::finished', $this, 'hookGenerateSitemap');
+            $this->addHookAfter('ProcessPageView::finished', $this, 'hookGenerateSitemap');
         }
     }
 
@@ -97,6 +97,10 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
 
     private function shouldGenerateSitemap()
     {
+        if (!$this->get('sitemapEnable')) {
+            return false;
+        }
+
         if (!$this->get('sitemapPath')) {
             return false;
         }

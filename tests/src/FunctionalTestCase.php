@@ -33,14 +33,16 @@ abstract class FunctionalTestCase extends TestCase
      */
     protected $wire;
 
-    protected function setUp()
+    public function __construct(string $name = null, array $data = [], string $dataName = '')
     {
+        parent::__construct($name, $data, $dataName);
+
         $this->wire = ProcessWire::getCurrentInstance();
     }
 
-    protected function wire($apiVar = null)
+    protected function wire($name = '', $value = null)
     {
-        return $this->wire->wire($apiVar);
+        return $this->wire->wire($name, $value);
     }
 
     /**

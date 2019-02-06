@@ -56,12 +56,16 @@ one is used. For example, `{images}` would pick the first image from the `images
 
 ### Sitemap Generation
 
-If enabled, the module hooks after `ProcessWire::finished` to generate the XML sitemap after the request is finished.
+If enabled, the module hooks after `ProcessPageView::finished` to generate the XML sitemap after the request is finished.
 
 * The sitemap is only generated if the current user is logged in and the current page is an admin page.
 * It only includes pages of templates having a _Seo Maestro_ field, in order to read the sitemap settings.
 * It includes hidden pages.
 * It excludes pages not viewable for the guest user.
+
+> ⚠ If your installation has lot of pages and the request takes too long to generate the sitemap, or if you run into
+memory problems, it is better disable automatic generation. Use the `SeoMaestro::getSitemapManager` class to create
+the sitemap on your own.   
 
 ### Output Meta Tags
 
