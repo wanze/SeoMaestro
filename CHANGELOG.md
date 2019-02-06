@@ -7,6 +7,7 @@
 ### Fixed
 
 * Fix rendering of the meta title tag
+* Fix encoding of meta data containing placeholders.
 
 ### Added
 

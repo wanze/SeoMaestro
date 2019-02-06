@@ -30,7 +30,7 @@ class TwitterSeoData extends SeoDataBase
     protected function renderValue($name, $value)
     {
         if ($this->containsPlaceholder($value)) {
-            return wirePopulateStringTags($value, $this->pageFieldValue->getPage());
+            $value = wirePopulateStringTags($value, $this->pageFieldValue->getPage());
         }
 
         return $this->encode($value);

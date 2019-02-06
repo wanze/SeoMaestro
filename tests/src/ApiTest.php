@@ -256,6 +256,15 @@ class ApiTest extends FunctionalTestCase
         $this->assertContains('Meta description EN', $page->get(self::FIELD_NAME)->render());
     }
 
+    public function test_placeholder_fields_containing_html_are_encoded()
+    {
+        $page = $this->createPage($this->template, '/');
+        $page->title = '<a href="">Seo & Maestro</a>';
+        $page->save();
+
+        $this->assertEquals('Seo &amp; Maestro', $page->get(self::FIELD_NAME)->meta->title);
+    }
+
     public function test_template_context()
     {
         $page = $this->createPage($this->template, '/', 'test-template-context');

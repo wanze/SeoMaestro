@@ -36,7 +36,7 @@ class OpengraphSeoData extends SeoDataBase
         }
 
         if ($this->containsPlaceholder($value)) {
-            return wirePopulateStringTags($value, $this->pageFieldValue->getPage());
+            $value = wirePopulateStringTags($value, $this->pageFieldValue->getPage());
         }
 
         return $this->encode($value);
