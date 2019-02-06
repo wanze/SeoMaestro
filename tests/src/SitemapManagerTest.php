@@ -181,16 +181,18 @@ class SitemapManagerTest extends FunctionalTestCase
         $this->assertSitemapContains($page1->get('name'));
         $this->assertSitemapContains($page2->get('name'));
 
-        // Exclude $page2 by hooking after SitemapManager::getExcludedPages
-        $this->sitemapManager->addHookAfter('getExcludedPages', function (HookEvent $event) use ($page2) {
+        // Exclude $page2
+        $hookId = $this->wire()->addHookAfter('SeoMaestro::sitemapAlwaysExclude', function (HookEvent $event) use ($page2) {
             /** @var \ProcessWire\PageArray $pageArray */
-            $pageArray = $event->return;
+            $pageArray = $event->arguments(0);
             $pageArray->add($page2);
         });
 
         $this->sitemapManager->generate($this->sitemap);
         $this->assertSitemapContains($page1->get('name'));
         $this->assertSitemapNotContains($page2->get('name'));
+
+        $this->wire()->removeHook($hookId);
     }
 
     protected function tearDown()

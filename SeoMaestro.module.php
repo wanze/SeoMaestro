@@ -95,6 +95,22 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
         return $value;
     }
 
+    /**
+     * Hook to modify pages that should always be excluded from the sitemap.
+     *
+     * Use this hook to add additional pages to the given PageArray. These
+     * pages are not rendered in the sitemap, regardless of sitemap settings
+     * on page level.
+     *
+     * @param \ProcessWire\PageArray $excludedPages
+     *
+     * @return \ProcessWire\PageArray
+     */
+    public function ___sitemapAlwaysExclude(PageArray $excludedPages)
+    {
+        return $excludedPages;
+    }
+
     private function shouldGenerateSitemap()
     {
         if (!$this->get('sitemapEnable')) {

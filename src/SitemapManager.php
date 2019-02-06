@@ -89,11 +89,13 @@ class SitemapManager extends WireData
      *
      * @return \ProcessWire\PageArray
      */
-    protected function ___getExcludedPages()
+    private function getExcludedPages()
     {
-        $http404 = $this->wire('pages')->get($this->wire('config')->http404PageID);
+        $excluded = $this->wire('pages')->find($this->wire('config')->http404PageID);
 
-        return (new PageArray())->import([$http404]);
+        // Allow to exclude additional pages by hooking SeoMaestro::sitemapAlwaysExclude().
+        return $this->wire('modules')->get('SeoMaestro')
+            ->sitemapAlwaysExclude($excluded);
     }
 
     /**
@@ -108,7 +110,7 @@ class SitemapManager extends WireData
         $template = new TemplateFile(dirname(__DIR__) . '/templates/sitemap.xml.php');
         $template->set('pages', $pages);
         $template->set('baseUrl', rtrim($this->get('baseUrl'), '/'));
-        $template->set('defaultLanguageCode', $this->get('defaultLanguage') ?: 'en');
+        $template->set('defaultLanguageCode', $this->get('defaultLanguage'));
 
         // Use the guest user while rendering, to ensure proper page view permissions.
         $user = $this->wire('users')->getCurrentUser();
