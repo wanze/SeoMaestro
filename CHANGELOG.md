@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2019-02-07
+
+### Fixed
+
+* Fix module not working correctly on single language installations
+
 ## [0.2.1] - 2019-02-06
 
 ### Fixed
@@ -33,7 +39,8 @@ allow installations via Composer.
 
 * Initial release of the module 🐣
 
-[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.3.0
 [0.2.1]: https://github.com/wanze/SeoMaestro/releases/tag/v0.2.1
 [0.2.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.2.0
 [0.1.1]: https://github.com/wanze/SeoMaestro/releases/tag/v0.1.1
