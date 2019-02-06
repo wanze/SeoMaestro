@@ -3,7 +3,8 @@
 namespace ProcessWire;
 
 use SeoMaestro\FormManager;
-use SeoMaestro\InputfieldSeo;
+use SeoMaestro\InputfieldGooglePreview;
+use SeoMaestro\InputfieldMetaData;
 
 /**
  * Inputfield to manage metatags and sitemap settings for a page.
@@ -107,7 +108,12 @@ class InputfieldSeoMaestro extends Inputfield
             $wrapper->append($fieldset);
 
             foreach ($group->children() as $inputfield) {
-                $field = new InputfieldSeo($inputfield->attr('name'), $pageValue, $inputfield);
+                // Insert google preview.
+                if ($inputfield->attr('name') === 'meta_title') {
+                    $preview = new InputfieldGooglePreview($pageValue);
+                    $fieldset->append($preview);
+                }
+                $field = new InputfieldMetaData($inputfield->attr('name'), $pageValue, $inputfield);
                 $fieldset->append($field);
             }
         }

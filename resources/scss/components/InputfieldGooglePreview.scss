@@ -1,0 +1,26 @@
+.seomaestro-googlepreview {
+    > .InputfieldContent {
+        font-family: arial, sans-serif;
+        max-width: 600px;
+
+        > .title {
+            color: #1a0dab;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 21.6px;
+        }
+
+        > .link {
+            color: #006621;
+            font-size: 14px;
+            padding-top: 1px;
+        }
+
+        .desc {
+            color: #545454;
+            font-size: 13px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+    }
+}

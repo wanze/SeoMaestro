@@ -9,7 +9,7 @@ use ProcessWire\InputfieldFieldset;
 /**
  * An inputfield to manage SEO data.
  */
-class InputfieldSeo extends InputfieldFieldset
+class InputfieldMetaData extends InputfieldFieldset
 {
     /**
      * @var \ProcessWire\Inputfield
@@ -44,20 +44,21 @@ class InputfieldSeo extends InputfieldFieldset
 
     private function setup()
     {
-        $this->addClass('seo-maestro-inputfield-seo');
+        $this->addClass('seomaestro-inputfield-metadata');
         $this->label = $this->inputfield->label;
         $this->description = $this->inputfield->description;
         $this->notes = $this->inputfield->notes;
 
         $this->inputfield->attr('name', sprintf('%s_%s', $this->pageValue->getField()->name, $this->name));
-        $this->inputfield->addClass('seo-maestro-inputfield-embed', 'wrapClass');
+        $this->inputfield->addClass('seomaestro-inputfield-embed', 'wrapClass');
 
         $inherit = $this->wire('modules')->get('InputfieldCheckbox');
         $inherit->label2 = $this->_('Inherit');
         $inherit->attr('name', $this->inputfield->attr('name') . '_inherit');
         $inherit->attr('checked', $this->inputfield->attr('value') === 'inherit');
         $inherit->columnWidth = 10;
-        $inherit->addClass('seo-maestro-inputfield-embed', 'wrapClass');
+        $inherit->addClass('seomaestro-inputfield-embed', 'wrapClass');
+        $inherit->wrapAttr('data-seomaestro-metadata-inherit', $this->inputfield->name);
 
         $this->inputfield->skipLabel = Inputfield::skipLabelHeader;
         $this->inputfield->description = '';
@@ -78,7 +79,7 @@ class InputfieldSeo extends InputfieldFieldset
         $preview = $this->wire('modules')->get('InputfieldMarkup');
         $preview->columnWidth = 45;
         $preview->showIf = $inherit->attr('name') . '=1';
-        $preview->addClass('seo-maestro-inputfield-embed');
+        $preview->addClass('seomaestro-inputfield-embed');
 
         if ($this->inputfield->attr('value') === 'inherit') {
             $preview->attr('value', $value);
@@ -99,7 +100,7 @@ class InputfieldSeo extends InputfieldFieldset
 
         // Add a little preview image for the opengraph image :)
         if ($this->name === 'opengraph_image' && $preview->attr('value')) {
-            $image = sprintf('<img class="seo-maestro-opengraph-image" src="%s" alt="%s">',
+            $image = sprintf('<img class="seomaestro-opengraph-image" src="%s" alt="%s">',
                 $preview->attr('value'),
                 $this->_('Preview of the opengraph image')
             );

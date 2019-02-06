@@ -161,6 +161,7 @@ class FormManager extends Wire
         $inputfield = $this->wire('modules')->get($type);
 
         if ($name === 'title' || $name === 'description') {
+            $inputfield->maxLength = 0;
             $inputfield->showCount = InputfieldText::showCountChars;
         }
 

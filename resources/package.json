@@ -1,0 +1,25 @@
+{
+  "name": "seomaestro",
+  "version": "0.1.0",
+  "description": "Frontend for the SeoMaestro module.",
+  "main": "js/index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "parcel-bundler": "^1.11.0",
+    "sass": "^1.17.0"
+  },
+  "scripts": {
+    "dev": "./node_modules/.bin/parcel js/index.js -d ../ -o InputfieldSeoMaestro",
+    "build": "./node_modules/.bin/parcel build js/index.js -d ../ -o InputfieldSeoMaestro"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wanze/SeoMaestro.git"
+  },
+  "author": "Stefan Wanzenried <stefan.wanzenried@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wanze/SeoMaestro/issues"
+  },
+  "homepage": "https://github.com/wanze/SeoMaestro#readme"
+}

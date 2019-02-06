@@ -1,0 +1,24 @@
+.seomaestro-inputfield-metadata {
+
+    > .InputfieldContent > .Inputfields {
+        padding-top: 1rem;
+    }
+
+    .seomaestro-inputfield-embed {
+        outline: 0;
+        margin-top: 0 !important;
+
+        > .InputfieldHeader,
+        > .InputfieldContent {
+            border: 0 !important;
+            padding-top: 0 !important;
+        }
+    }
+
+    .seomaestro-opengraph-image {
+        display: block;
+        width: 150px;
+        height: auto;
+        margin-bottom: 1em;
+    }
+}
