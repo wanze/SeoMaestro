@@ -89,6 +89,13 @@ class PageFieldValue extends WireData
             return $this->getSeoData($group)->render();
         }, $this->field->type->getSeoGroups());
 
+        $tags += $this->wire('modules')->get('SeoMaestro')
+            ->renderMetatags($this->getCommonMetatags());
+
+        $tags = array_filter($tags, function ($tag) {
+            return $tag !== '';
+        });
+
         return implode("\n", $tags);
     }
 
@@ -114,6 +121,37 @@ class PageFieldValue extends WireData
     public function getField()
     {
         return $this->field;
+    }
+
+    /**
+     * Build some common metatags not configured via fieldtype.
+     *
+     * @return array
+     */
+    private function getCommonMetatags()
+    {
+        $tags = [
+            'link_canonical' => sprintf('<link rel="canonical" href="%s">', $this->page->httpUrl),
+        ];
+
+        $defaultLang = $this->wire('modules')->get('SeoMaestro')->get('defaultLanguage') ?: 'en';
+
+        foreach ($this->wire('languages') ?: [] as $language) {
+            $langId = $language->isDefault() ? '' : $language->id;
+            if (!$this->page->get("status{$langId}")) {
+                continue;
+            }
+
+            $code = $language->isDefault() ? $defaultLang : $language->name;
+            $url = $this->page->localHttpUrl($language);
+
+            $tags["link_rel_{$code}"] = sprintf('<link rel="alternate" href="%s" hreflang="%s">', $url, $code);
+        }
+
+        $tags['link_rel_default'] = sprintf('<link rel="alternate" href="%s" hreflang="x-default">', $this->page->httpUrl);
+        $tags['meta_generator'] = '<meta name="generator" content="ProcessWire">';
+
+        return $tags;
     }
 
     private function isSeoGroup($name)

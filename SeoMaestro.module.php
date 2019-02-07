@@ -72,11 +72,11 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
      * Hook to add, remove or modify rendered meta tags of a given group.
      *
      * @param array $tags
-     * @param string $group
+     * @param string|null $group
      *
      * @return array
      */
-    public function ___renderMetatags(array $tags, $group)
+    public function ___renderMetatags(array $tags, $group = null)
     {
         return $tags;
     }

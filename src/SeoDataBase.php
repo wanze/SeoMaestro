@@ -111,7 +111,7 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
         $tags = $this->wire('modules')->get('SeoMaestro')
             ->renderMetatags($tags, $this->group);
 
-        return implode("\n", $tags);
+        return count($tags) ? implode("\n", $tags) : '';
     }
 
     /**

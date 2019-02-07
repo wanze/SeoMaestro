@@ -265,6 +265,22 @@ class ApiTest extends FunctionalTestCase
         $this->assertEquals('Seo &amp; Maestro', $page->get(self::FIELD_NAME)->meta->title);
     }
 
+    public function test_render_all_metatags()
+    {
+        $page = $this->createPage($this->template, '/', 'a-page-en');
+        $page->title = 'A Page';
+
+        $de = $this->wire('languages')->get('de');
+        // Make it active in DE but not in FI
+        $page->set("status{$de->id}", 1);
+        $page->set("name{$de->id}", 'a-page-de');
+        $page->save();
+
+        $expected = "<title>A Page</title>\n<meta property=\"og:title\" content=\"A Page\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"http://localhost/en/a-page-en/\">\n<meta name=\"twitter:card\" value=\"summary\">\n<link rel=\"canonical\" href=\"http://localhost/en/a-page-en/\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"en\">\n<link rel=\"alternate\" href=\"http://localhost/de/a-page-de/\" hreflang=\"de\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"x-default\">\n<meta name=\"generator\" content=\"ProcessWire\">";
+
+        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->render());
+    }
+
     public function test_template_context()
     {
         $page = $this->createPage($this->template, '/', 'test-template-context');
