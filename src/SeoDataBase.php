@@ -3,6 +3,7 @@
 namespace SeoMaestro;
 
 use ProcessWire\Language;
+use ProcessWire\SeoMaestro;
 use ProcessWire\WireData;
 use ProcessWire\WireException;
 
@@ -22,14 +23,21 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
     protected $group;
 
     /**
+     * @var \ProcessWire\SeoMaestro
+     */
+    protected $seoMaestro;
+
+    /**
      * @param \SeoMaestro\PageFieldValue $pageFieldValue
+     * @param \ProcessWire\SeoMaestro $seoMaestro
      * @param array $data
      */
-    public function __construct(PageFieldValue $pageFieldValue, array $data)
+    public function __construct(PageFieldValue $pageFieldValue, SeoMaestro $seoMaestro, array $data)
     {
         parent::__construct();
 
         $this->pageFieldValue = $pageFieldValue;
+        $this->seoMaestro = $seoMaestro;
         $this->data = $data;
     }
 
@@ -43,8 +51,7 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
         $value = $this->renderValue($name, $value);
 
         // Allow hooks to transform any rendered value.
-        return $this->wire('modules')->get('SeoMaestro')
-            ->renderSeoDataValue($this->group, $name, $value);
+        return $this->seoMaestro->renderSeoDataValue($this->group, $name, $value);
     }
 
     /**
@@ -108,8 +115,7 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
         $tags = $this->renderMetatags($data);
 
         // Allow hooks to modify any data before transforming to the final output.
-        $tags = $this->wire('modules')->get('SeoMaestro')
-            ->renderMetatags($tags, $this->group);
+        $tags = $this->seoMaestro->renderMetatags($tags, $this->group);
 
         return count($tags) ? implode("\n", $tags) : '';
     }

@@ -43,7 +43,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
      */
     public function getBlankValue(Page $page, Field $field)
     {
-        return $this->wire(new PageFieldValue($page, $field, []));
+        return $this->wire(new PageFieldValue($page, $field, $this->seoMaestro(), []));
     }
 
     /**
@@ -53,7 +53,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
     {
         $data = $value['data'] ? json_decode($value['data'], true) : [];
 
-        return $this->wire(new PageFieldValue($page, $field, $data));
+        return $this->wire(new PageFieldValue($page, $field, $this->seoMaestro(), $data));
     }
 
     /**
@@ -63,11 +63,11 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
     {
         return [
             'data' => json_encode($value->getArray()),
-            'meta_inherit' => $this->isAllDataInherited('meta', $value) ? 1 : 0,
-            'opengraph_inherit' => $this->isAllDataInherited('opengraph', $value) ? 1 : 0,
-            'twitter_inherit' => $this->isAllDataInherited('twitter', $value) ? 1 : 0,
-            'robots_inherit' => $this->isAllDataInherited('robots', $value) ? 1 : 0,
-            'sitemap_inherit' => $this->isAllDataInherited('sitemap', $value) ? 1 : 0,
+            'meta_inherit' => $this->doesGroupInheritData('meta', $value) ? 1 : 0,
+            'opengraph_inherit' => $this->doesGroupInheritData('opengraph', $value) ? 1 : 0,
+            'twitter_inherit' => $this->doesGroupInheritData('twitter', $value) ? 1 : 0,
+            'robots_inherit' => $this->doesGroupInheritData('robots', $value) ? 1 : 0,
+            'sitemap_inherit' => $this->doesGroupInheritData('sitemap', $value) ? 1 : 0,
             'sitemap_include' => $value->get('sitemap')->include ? 1 : 0,
         ];
     }
@@ -238,27 +238,6 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
     }
 
     /**
-     * Check if all data of the given group is inherited in the given page value.
-     *
-     * @param string $group
-     * @param \SeoMaestro\PageFieldValue $pageValue
-     *
-     * @return bool
-     */
-    private function isAllDataInherited($group, PageFieldValue $pageValue)
-    {
-        $data = $this->getSeoDataByGroup()[$group];
-
-        foreach (array_keys($data) as $name) {
-            if ($pageValue->get(sprintf('%s_%s', $group, $name)) !== 'inherit') {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function ___getConfigInputfields(Field $field)
@@ -274,7 +253,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
 
         $values = array_merge($this->getDefaultConfig($field), $field->getArray());
 
-        $formManager = new FormManager();
+        $formManager = new FormManager($this->seoMaestro());
         $form = $formManager->buildForm($this->getSeoData());
         $formManager->populateValues($form, $values);
 
@@ -296,5 +275,34 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
             parent::___getConfigAllowContext($field),
             $configGroups
         );
+    }
+
+    /**
+     * @return \ProcessWire\SeoMaestro
+     */
+    private function seoMaestro()
+    {
+        return $this->wire('modules')->get('SeoMaestro');
+    }
+
+    /**
+     * Check if all data of the given group is inherited in the given page value.
+     *
+     * @param string $group
+     * @param \SeoMaestro\PageFieldValue $pageValue
+     *
+     * @return bool
+     */
+    private function doesGroupInheritData($group, PageFieldValue $pageValue)
+    {
+        $data = $this->getSeoDataByGroup()[$group];
+
+        foreach (array_keys($data) as $name) {
+            if ($pageValue->get(sprintf('%s_%s', $group, $name)) !== 'inherit') {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

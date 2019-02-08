@@ -276,7 +276,7 @@ class ApiTest extends FunctionalTestCase
         $page->set("name{$de->id}", 'a-page-de');
         $page->save();
 
-        $expected = "<title>A Page</title>\n<meta property=\"og:title\" content=\"A Page\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"http://localhost/en/a-page-en/\">\n<meta name=\"twitter:card\" value=\"summary\">\n<link rel=\"canonical\" href=\"http://localhost/en/a-page-en/\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"en\">\n<link rel=\"alternate\" href=\"http://localhost/de/a-page-de/\" hreflang=\"de\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"x-default\">\n<meta name=\"generator\" content=\"ProcessWire\">";
+        $expected = "<title>A Page</title>\n<meta property=\"og:title\" content=\"A Page\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"http://localhost/en/a-page-en/\">\n<meta name=\"twitter:card\" value=\"summary\">\n<meta name=\"generator\" content=\"ProcessWire\">\n<link rel=\"canonical\" href=\"http://localhost/en/a-page-en/\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"en\">\n<link rel=\"alternate\" href=\"http://localhost/de/a-page-de/\" hreflang=\"de\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"x-default\">";
 
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->render());
     }

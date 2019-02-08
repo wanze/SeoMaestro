@@ -71,7 +71,7 @@ class InputfieldSeoMaestro extends Inputfield
 
                 // Hacky: Checkboxes do not send the unchecked value here... if the inputfield is a checkbox, null === 0.
                 if ($value === null) {
-                    $form = (new FormManager())->buildForm($this->getDisplayedSeoData());
+                    $form = $this->formManager()->buildForm($this->getDisplayedSeoData());
                     $inputfield = $form->get($name);
                     $value = ($inputfield instanceof InputfieldCheckbox) ? 0 : null;
                 }
@@ -96,12 +96,12 @@ class InputfieldSeoMaestro extends Inputfield
      *
      * @return \ProcessWire\InputfieldWrapper
      */
-    protected function ___buildForm()
+    protected function buildForm()
     {
         /** @var \SeoMaestro\PageFieldValue $pageValue */
         $pageValue = $this->attr('value');
 
-        $formManager = new FormManager();
+        $formManager = $this->formManager();
         $form = $formManager->buildForm($this->getDisplayedSeoData());
         $formManager->populateValues($form, $pageValue->getArray());
 
@@ -111,7 +111,8 @@ class InputfieldSeoMaestro extends Inputfield
             $fieldset = $this->wire('modules')->get('InputfieldFieldset');
             $fieldset->label = $group->label;
             $fieldset->description = $group->description;
-            $fieldset->collapsed = ($i === 0) ? Inputfield::collapsedNo : Inputfield::collapsedYes;
+            $fieldset->notes = $group->notes;
+            $fieldset->collapsed = $group->collapsed;
             $wrapper->append($fieldset);
 
             foreach ($group->children() as $inputfield) {
@@ -126,6 +127,16 @@ class InputfieldSeoMaestro extends Inputfield
         }
 
         return $wrapper;
+    }
+
+    /**
+     * @return FormManager
+     */
+    private function formManager()
+    {
+        return $this->wire(
+            new FormManager($this->wire('modules')->get('SeoMaestro'))
+        );
     }
 
     /**

@@ -5,6 +5,7 @@ namespace SeoMaestro;
 use ProcessWire\Inputfield;
 use ProcessWire\InputfieldText;
 use ProcessWire\InputfieldWrapper;
+use ProcessWire\SeoMaestro;
 use ProcessWire\Wire;
 
 /**
@@ -12,6 +13,21 @@ use ProcessWire\Wire;
  */
 class FormManager extends Wire
 {
+    /**
+     * @var \ProcessWire\SeoMaestro
+     */
+    private $seoMaestro;
+
+    /**
+     * @param \ProcessWire\SeoMaestro $seoMaestro
+     */
+    public function __construct(SeoMaestro $seoMaestro)
+    {
+        parent::__construct();
+
+        $this->seoMaestro = $seoMaestro;
+    }
+
     /**
      * Build the form containing all inputfields of the given SEO data.
      *
@@ -40,7 +56,7 @@ class FormManager extends Wire
             $fieldset->append($inputfield);
         }
 
-        return $wrapper;
+        return $this->seoMaestro->alterSeoDataForm($wrapper);
     }
 
     /**

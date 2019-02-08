@@ -4,6 +4,7 @@ namespace SeoMaestro;
 
 use ProcessWire\Field;
 use ProcessWire\Page;
+use ProcessWire\SeoMaestro;
 use ProcessWire\WireData;
 use ProcessWire\WireException;
 
@@ -23,6 +24,11 @@ class PageFieldValue extends WireData
     private $field;
 
     /**
+     * @var \Processwire\SeoMaestro
+     */
+    private $seoMaestro;
+
+    /**
      * @var array
      */
     private $seoData = [];
@@ -30,14 +36,16 @@ class PageFieldValue extends WireData
     /**
      * @param \ProcessWire\Page $page
      * @param \ProcessWire\Field $field
+     * @param \ProcessWire\SeoMaestro $seoMaestro
      * @param array $data
      */
-    public function __construct(Page $page, Field $field, array $data = [])
+    public function __construct(Page $page, Field $field, SeoMaestro $seoMaestro, array $data = [])
     {
         parent::__construct();
 
         $this->page = $page;
         $this->field = $field;
+        $this->seoMaestro = $seoMaestro;
         $this->setDefaultData($data);
     }
 
@@ -89,8 +97,7 @@ class PageFieldValue extends WireData
             return $this->getSeoData($group)->render();
         }, $this->field->type->getSeoGroups());
 
-        $tags += $this->wire('modules')->get('SeoMaestro')
-            ->renderMetatags($this->getCommonMetatags());
+        $tags += $this->seoMaestro->renderMetatags($this->getCommonMetatags());
 
         $tags = array_filter($tags, function ($tag) {
             return $tag !== '';
@@ -130,13 +137,14 @@ class PageFieldValue extends WireData
      */
     private function getCommonMetatags()
     {
-        $baseUrl = $this->wire('modules')->get('SeoMaestro')->get('baseUrl');
-        $defaultLang = $this->wire('modules')->get('SeoMaestro')->get('defaultLanguage') ?: 'en';
+        $baseUrl = $this->seoMaestro->get('baseUrl');
+        $defaultLang = $this->seoMaestro->get('defaultLanguage') ?: 'en';
         $hasLanguageSupportPageNames = $this->wire('modules')->isInstalled('LanguageSupportPageNames');
 
         $canonicalUrl = $baseUrl ? $baseUrl . $this->page->url : $this->page->httpUrl;
 
         $tags = [
+            'meta_generator' => '<meta name="generator" content="ProcessWire">',
             'link_canonical' => sprintf('<link rel="canonical" href="%s">', $canonicalUrl),
         ];
 
@@ -154,8 +162,6 @@ class PageFieldValue extends WireData
         }
 
         $tags['link_rel_default'] = sprintf('<link rel="alternate" href="%s" hreflang="x-default">', $this->page->httpUrl);
-
-        $tags['meta_generator'] = '<meta name="generator" content="ProcessWire">';
 
         return $tags;
     }
@@ -175,7 +181,7 @@ class PageFieldValue extends WireData
         if (!isset($this->seoData[$group])) {
             $class = sprintf('\\SeoMaestro\\%sSeoData', ucfirst($group));
             $data = $this->getDataOfGroup($group);
-            $seoData = $this->wire(new $class($this, $data));
+            $seoData = $this->wire(new $class($this, $this->seoMaestro, $data));
             $this->seoData[$group] = $seoData;
         }
 

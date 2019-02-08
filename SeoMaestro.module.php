@@ -96,6 +96,19 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
     }
 
     /**
+     * Hook to alter the form holding the SEO data.
+     *
+     * Use this hook to customize the inputfields, e.g. change collapsed states
+     * or descriptions.
+     *
+     * @param \ProcessWire\InputfieldWrapper $wrapper
+     */
+    public function ___alterSeoDataForm(InputfieldWrapper $wrapper)
+    {
+        return $wrapper;
+    }
+
+    /**
      * Hook to modify pages that should always be excluded from the sitemap.
      *
      * Use this hook to add additional pages to the given PageArray. These
