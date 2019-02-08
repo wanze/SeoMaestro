@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+## [0.4.0] - 2019-02-08
+
+### Fixed
+
+* Fix meta tag rendering of data in the `meta` and `twitter` groups 🤦‍️ ([#2](https://github.com/wanze/SeoMaestro/issues/2))
+* Fix calls to undefined method `Page::localHttpUrl` if `LanguageSupportPageNames` ist not installed ([#1](https://github.com/wanze/SeoMaestro/issues/1))
+
+### Added
+
+* Render common meta tags not managed by the fieldtype:
+  * `<link rel="canonical">`
+  * `<link rel="alternate">`
+  * `<meta name="generator">`
+* Add possibility to modify the form rendering SEO data via `SeoMaestro::alterSeoDataForm`  
+
 ## [0.3.0] - 2019-02-07
 
 ### Fixed
@@ -39,7 +54,8 @@ allow installations via Composer.
 
 * Initial release of the module 🐣
 
-[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.4.0
 [0.3.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.3.0
 [0.2.1]: https://github.com/wanze/SeoMaestro/releases/tag/v0.2.1
 [0.2.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.2.0

@@ -54,7 +54,7 @@ one is used. For example, `{images}` would pick the first image from the `images
 
 > ℹ️ Edit the field in the context of a template to override any of the default data per template.
 
-### Sitemap Generation
+## XML Sitemap
 
 If enabled, the module hooks after `ProcessPageView::finished` to generate the XML sitemap after the request is finished.
 
@@ -64,15 +64,38 @@ If enabled, the module hooks after `ProcessPageView::finished` to generate the X
 * It excludes pages not viewable for the guest user.
 
 > ⚠ If your installation has lot of pages and the request takes too long to generate the sitemap, or if you run into
-memory problems, it is better disable automatic generation. Use the `SeoMaestro::getSitemapManager` class to create
-the sitemap on your own.   
+memory problems, it is better disable automatic generation. Use the `\SeoMaestro\SitemapManager` class to create
+the sitemap on your own.
+
+## Meta Data
+
+### Common
+
+Common meta tags that are not managed with the fieldtype, but rendered by default.
+
+| Tag | Description |
+| --- | --- |
+| `<link rel="canonical">` | The canonical URL of a page, by default equal to the page's url. |
+| `<link rel="alternate">` | Contains the local url of each active page on multi language sites. |
+| `<meta name="generator">` | Let anyone know that your site is powedered by ProcessWire :) |
+
+### Fieldtype
+
+The following meta data is managed for each page via _Seo Maestro_ field. Meta tags are organized in so called  _groups_.
+
+| Group | Tags | Description |
+| --- | --- | --- |
+| `meta` |  `title`<br>`description`<br>`keywords` | Holds the famous `title` and `description` tags that should be optimized for search engines.
+| `opengraph` |  `og:title`<br>`og:description`<br>`og:image`<br>`og:image:alt`<br>`og:type`<br>`og:image`<br>`og:locale`<br>`og:site_name` | By default, title and description inherit the values from the meta group. If an image is specified, the `og:image:width`, `og:image:height` and `og:image:type` tags are included automatically during rendering. |
+| `twitter` |  `twitter:card`<br>`twitter:site`<br>`twitter:creator` | Twitter reads the opengraph meta data as well, except for a few specific tags. |
+| `robots` |  `noindex`<br>`nofollow` | Both tags might be set individually or combined. |
 
 ### Output Meta Tags
 
 Meta tags must be rendered in the `<head>` region of your templates:
 
 ```php
-// Render all meta tags.
+// Render all meta tags, including the common ones.
 echo $page->seo->render();
 
 // Render only the opengraph tags.
@@ -124,8 +147,7 @@ All meta data is stored as JSON, allowing to add new data anytime without the ne
 module stores some useful flags whenever a page is saved, and these flags can be used in selectors:
 
 * `sitemap_include` to quickly query if a page is included or excluded in the sitemap.
-* `<group>_inherit` is set to `1`, if a page inherits _all_ meta data of a given group
-(`meta`, `opengraph`, `robots`, `twitter`, `sitemap`).
+* `<group>_inherit` is set to `1`, if a page inherits _all_ meta data of a given group.
 
 **Examples**
 
@@ -133,6 +155,8 @@ Find all pages included in the sitemap:
 ```
 $pages->find('seo.sitemap_include=1');
 ```
+
+---
 
 Find all pages excluded from the sitemap inheriting all meta and opengraph data.
 ```

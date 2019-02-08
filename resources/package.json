@@ -1,6 +1,6 @@
 {
   "name": "seomaestro",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Frontend for the SeoMaestro module.",
   "main": "js/index.js",
   "dependencies": {},
