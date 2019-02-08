@@ -60,6 +60,6 @@ class MetaSeoData extends SeoDataBase
 
     private function renderTag($name, $value)
     {
-        return sprintf('<meta name="%s" value="%s">', $name, $value);
+        return sprintf('<meta name="%s" content="%s">', $name, $value);
     }
 }

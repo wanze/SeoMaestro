@@ -189,12 +189,12 @@ class ApiTest extends FunctionalTestCase
         $page->get(self::FIELD_NAME)->meta->description = "This <a href='/foo'>string</a> <b>should</b><br> be sanitized and encode'd correctly\n";
         $page->save();
 
-        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" value=\"This string should be sanitized and encode&#039;d correctly\">";
+        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"This string should be sanitized and encode&#039;d correctly\">";
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
 
         $page->get(self::FIELD_NAME)->meta->keywords = 'Seo Maestro, ProcessWire, Module';
 
-        $expected .= "\n<meta name=\"keywords\" value=\"Seo Maestro, ProcessWire, Module\">";
+        $expected .= "\n<meta name=\"keywords\" content=\"Seo Maestro, ProcessWire, Module\">";
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
     }
 
@@ -218,7 +218,7 @@ class ApiTest extends FunctionalTestCase
         $page->get(self::FIELD_NAME)->twitter->site = '@schtifu';
         $page->get(self::FIELD_NAME)->twitter->creator = '@schtifu';
 
-        $expected = "<meta name=\"twitter:card\" value=\"summary\">\n<meta name=\"twitter:site\" value=\"@schtifu\">\n<meta name=\"twitter:creator\" value=\"@schtifu\">";
+        $expected = "<meta name=\"twitter:card\" content=\"summary\">\n<meta name=\"twitter:site\" content=\"@schtifu\">\n<meta name=\"twitter:creator\" content=\"@schtifu\">";
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->twitter->render());
     }
 
@@ -276,7 +276,7 @@ class ApiTest extends FunctionalTestCase
         $page->set("name{$de->id}", 'a-page-de');
         $page->save();
 
-        $expected = "<title>A Page</title>\n<meta property=\"og:title\" content=\"A Page\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"http://localhost/en/a-page-en/\">\n<meta name=\"twitter:card\" value=\"summary\">\n<meta name=\"generator\" content=\"ProcessWire\">\n<link rel=\"canonical\" href=\"http://localhost/en/a-page-en/\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"en\">\n<link rel=\"alternate\" href=\"http://localhost/de/a-page-de/\" hreflang=\"de\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"x-default\">";
+        $expected = "<title>A Page</title>\n<meta property=\"og:title\" content=\"A Page\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"http://localhost/en/a-page-en/\">\n<meta name=\"twitter:card\" content=\"summary\">\n<meta name=\"generator\" content=\"ProcessWire\">\n<link rel=\"canonical\" href=\"http://localhost/en/a-page-en/\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"en\">\n<link rel=\"alternate\" href=\"http://localhost/de/a-page-de/\" hreflang=\"de\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"x-default\">";
 
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->render());
     }

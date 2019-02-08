@@ -114,7 +114,7 @@ class SeoMaestroTest extends FunctionalTestCase
         $page->get(self::FIELD_NAME)->meta->description = 'A meta description';
         $page->save();
 
-        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" value=\"A meta description\">";
+        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"A meta description\">";
 
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
 

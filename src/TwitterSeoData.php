@@ -61,7 +61,7 @@ class TwitterSeoData extends SeoDataBase
                 continue;
             }
 
-            $tags[$name] = sprintf('<meta name="twitter:%s" value="%s">', $name, $value);
+            $tags[$name] = sprintf('<meta name="twitter:%s" content="%s">', $name, $value);
         }
 
         return $tags;
