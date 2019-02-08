@@ -130,25 +130,31 @@ class PageFieldValue extends WireData
      */
     private function getCommonMetatags()
     {
+        $baseUrl = $this->wire('modules')->get('SeoMaestro')->get('baseUrl');
+        $defaultLang = $this->wire('modules')->get('SeoMaestro')->get('defaultLanguage') ?: 'en';
+        $hasLanguageSupportPageNames = $this->wire('modules')->isInstalled('LanguageSupportPageNames');
+
+        $canonicalUrl = $baseUrl ? $baseUrl . $this->page->url : $this->page->httpUrl;
+
         $tags = [
-            'link_canonical' => sprintf('<link rel="canonical" href="%s">', $this->page->httpUrl),
+            'link_canonical' => sprintf('<link rel="canonical" href="%s">', $canonicalUrl),
         ];
 
-        $defaultLang = $this->wire('modules')->get('SeoMaestro')->get('defaultLanguage') ?: 'en';
+        if ($hasLanguageSupportPageNames) {
+            foreach ($this->wire('languages') ?: [] as $language) {
+                if (!$this->page->viewable($language)) {
+                    continue;
+                }
 
-        foreach ($this->wire('languages') ?: [] as $language) {
-            $langId = $language->isDefault() ? '' : $language->id;
-            if (!$this->page->get("status{$langId}")) {
-                continue;
+                $code = $language->isDefault() ? $defaultLang : $language->name;
+                $url = $baseUrl ? $baseUrl . $this->page->localUrl($language) : $this->page->localHttpUrl($language);
+
+                $tags["link_rel_{$code}"] = sprintf('<link rel="alternate" href="%s" hreflang="%s">', $url, $code);
             }
-
-            $code = $language->isDefault() ? $defaultLang : $language->name;
-            $url = $this->page->localHttpUrl($language);
-
-            $tags["link_rel_{$code}"] = sprintf('<link rel="alternate" href="%s" hreflang="%s">', $url, $code);
         }
 
         $tags['link_rel_default'] = sprintf('<link rel="alternate" href="%s" hreflang="x-default">', $this->page->httpUrl);
+
         $tags['meta_generator'] = '<meta name="generator" content="ProcessWire">';
 
         return $tags;

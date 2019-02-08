@@ -114,6 +114,8 @@ class SitemapManager extends WireData
         $template->set('pages', $pages);
         $template->set('baseUrl', rtrim($this->get('baseUrl'), '/'));
         $template->set('defaultLanguageCode', $this->get('defaultLanguage'));
+        $template->set('hasLanguageSupport', $this->wire('modules')->isInstalled('LanguageSupport'));
+        $template->set('hasLanguageSupportPageNames', $this->wire('modules')->isInstalled('LanguageSupportPageNames'));
 
         // Use the guest user while rendering, to ensure proper page view permissions.
         $user = $this->wire('users')->getCurrentUser();
