@@ -142,7 +142,8 @@ class InputfieldSeoMaestro extends Inputfield
     /**
      * @return array
      */
-    private function getDisplayedSeoData() {
+    private function getDisplayedSeoData()
+    {
         $displayed = [];
 
         foreach ($this->field->type->getSeoData() as $key => $data) {

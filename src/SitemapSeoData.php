@@ -36,7 +36,7 @@ class SitemapSeoData extends SeoDataBase
     {
         if ($name === 'changeFrequency') {
             return in_array($value, self::$changeFrequencies) ? $value : 'monthly';
-        } else if ($name === 'include') {
+        } elseif ($name === 'include') {
             return (int) $value;
         }
 

@@ -44,7 +44,7 @@ class FieldtypeSeoMaestroTest extends FunctionalTestCase
     {
         $sleepValues = [];
 
-        $this->wire()->addHookAfter('FieldtypeSeoMaestro::sleepValue', function(HookEvent $event) use (&$sleepValues) {
+        $this->wire()->addHookAfter('FieldtypeSeoMaestro::sleepValue', function (HookEvent $event) use (&$sleepValues) {
             $sleepValues = $event->return;
         });
 
@@ -73,7 +73,7 @@ class FieldtypeSeoMaestroTest extends FunctionalTestCase
     {
         $sleepValues = [];
 
-        $this->wire()->addHookAfter('FieldtypeSeoMaestro::sleepValue', function(HookEvent $event) use (&$sleepValues) {
+        $this->wire()->addHookAfter('FieldtypeSeoMaestro::sleepValue', function (HookEvent $event) use (&$sleepValues) {
             $sleepValues = $event->return;
         });
 

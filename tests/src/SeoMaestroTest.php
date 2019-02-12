@@ -50,7 +50,6 @@ class SeoMaestroTest extends FunctionalTestCase
      */
     public function it_should_return_the_sitemap_manager()
     {
-        $this->seoMaestro->init();
         $this->assertInstanceOf(SitemapManager::class, $this->seoMaestro->getSitemapManager());
     }
 
@@ -67,7 +66,6 @@ class SeoMaestroTest extends FunctionalTestCase
 
         $this->seoMaestro->setArray($moduleConfig);
         $this->seoMaestro->set('sitemapPath', 'site/modules/SeoMaestro/tests/temp/sitemap.test.xml');
-        $this->seoMaestro->init();
         $this->seoMaestro->ready();
 
         $this->assertFileNotExists($this->sitemap);

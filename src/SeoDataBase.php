@@ -67,7 +67,8 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
     /**
      * {@inheritdoc}
      */
-    public function getUnformatted($name) {
+    public function getUnformatted($name)
+    {
         return $this->lookupUnformattedValue($name);
     }
 

@@ -150,7 +150,7 @@ class OpengraphSeoData extends SeoDataBase
      */
     private function getFieldNameFromPlaceholder($value)
     {
-        if (preg_match('/^\{(.*)\}$/', $value, $matches)){
+        if (preg_match('/^\{(.*)\}$/', $value, $matches)) {
             return $matches[1];
         }
 

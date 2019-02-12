@@ -29,6 +29,11 @@ abstract class FunctionalTestCase extends TestCase
     protected $fields = [];
 
     /**
+     * @var array
+     */
+    protected $hookIds = [];
+
+    /**
      * @var \ProcessWire\ProcessWire
      */
     protected $wire;
@@ -102,6 +107,22 @@ abstract class FunctionalTestCase extends TestCase
         return $field;
     }
 
+    protected function addHookAfter($method, $toObject, $toMethod = null, $options = [])
+    {
+        $hookId = $this->wire->addHookAfter($method, $toObject, $toMethod, $options);
+        $this->hookIds[] = $hookId;
+
+        return $hookId;
+    }
+
+    protected function addHookBefore($method, $toObject, $toMethod = null, $options = [])
+    {
+        $hookId = $this->wire->addHookBefore($method, $toObject, $toMethod, $options);
+        $this->hookIds[] = $hookId;
+
+        return $hookId;
+    }
+
     protected function tearDown()
     {
         foreach ($this->pages as $page) {
@@ -115,6 +136,10 @@ abstract class FunctionalTestCase extends TestCase
 
         foreach ($this->fields as $field) {
             $this->wire->wire('fields')->delete($field);
+        }
+
+        foreach ($this->hookIds as $hookId) {
+            $this->wire->removeHook($hookId);
         }
     }
 }
