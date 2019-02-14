@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+* Fix wrong url in the `<link rel="alternate" hreflang="x-default">` meta tag.
+
 ## [0.4.0] - 2019-02-08
 
 ### Fixed

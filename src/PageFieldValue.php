@@ -158,10 +158,12 @@ class PageFieldValue extends WireData
                 $url = $baseUrl ? $baseUrl . $this->page->localUrl($language) : $this->page->localHttpUrl($language);
 
                 $tags["link_rel_{$code}"] = sprintf('<link rel="alternate" href="%s" hreflang="%s">', $url, $code);
+
+                if ($language->isDefault()) {
+                    $tags['link_rel_default'] = sprintf('<link rel="alternate" href="%s" hreflang="x-default">', $url);
+                }
             }
         }
-
-        $tags['link_rel_default'] = sprintf('<link rel="alternate" href="%s" hreflang="x-default">', $this->page->httpUrl);
 
         return $tags;
     }
