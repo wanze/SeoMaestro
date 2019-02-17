@@ -9,7 +9,7 @@
 <?php if (!$page->viewable($language)) continue; ?>
     <url>
         <loc><?= $baseUrl ? $baseUrl . $page->localUrl($language) : $page->localHttpUrl($language) ?></loc>
-        <lastmod><?= $page->modifiedStr ?></lastmod>
+        <lastmod><?= date('c', $page->modified) ?></lastmod>
         <changefreq><?= $page->seoMaestroSitemapData->changeFrequency ?></changefreq>
         <priority><?= $page->seoMaestroSitemapData->priority ?></priority>
 <?php foreach ($languages as $language): ?>
