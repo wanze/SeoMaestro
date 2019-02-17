@@ -2,7 +2,12 @@
 
 ## [Unreleased]
 
+## [0.5.0] - 2019-02-17
+
+### Fixed
+
 * Fix wrong url in the `<link rel="alternate" hreflang="x-default">` meta tag.
+* Fix date formatting for the `lastmod` property in the XML sitemap.
 
 ## [0.4.0] - 2019-02-08
 
@@ -56,7 +61,8 @@ allow installations via Composer.
 
 * Initial release of the module 🐣
 
-[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.5.0
 [0.4.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.4.0
 [0.3.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.3.0
 [0.2.1]: https://github.com/wanze/SeoMaestro/releases/tag/v0.2.1
