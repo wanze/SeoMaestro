@@ -21,7 +21,7 @@
 <?php else: ?>
     <url>
         <loc><?= $baseUrl ? $baseUrl . $page->url : $page->httpUrl ?></loc>
-        <lastmod><?= $page->modifiedStr ?></lastmod>
+        <lastmod><?= date('c', $page->modified) ?></lastmod>
         <changefreq><?= $page->seoMaestroSitemapData->changeFrequency ?></changefreq>
         <priority><?= $page->seoMaestroSitemapData->priority ?></priority>
     </url>
