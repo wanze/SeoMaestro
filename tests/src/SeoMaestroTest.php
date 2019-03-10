@@ -112,7 +112,7 @@ class SeoMaestroTest extends FunctionalTestCase
         $page->get(self::FIELD_NAME)->meta->description = 'A meta description';
         $page->save();
 
-        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"A meta description\">";
+        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"A meta description\">\n<link rel=\"canonical\" href=\"http://localhost/en/untitled-page/\">";
 
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
 
@@ -120,9 +120,10 @@ class SeoMaestroTest extends FunctionalTestCase
             $tags = $event->arguments(0);
             $group = $event->arguments(1);
 
-            // Remove the description meta tag.
+            // Remove the description and canonical URL.
             if ($group === 'meta') {
                 unset($tags['description']);
+                unset($tags['canonicalUrl']);
                 $event->return = $tags;
             }
         });

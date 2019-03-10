@@ -2,12 +2,20 @@
 
 ## [Unreleased]
 
+### Added
+
+* The canonical URL is now part of the `meta` group and can be customized ([#4](https://github.com/wanze/SeoMaestro/issues/4))
+
+### Fixed
+
+* Fix date formatting for the `lastmod` property in the XML sitemap for single language setups 🤦‍️
+
 ## [0.5.0] - 2019-02-17
 
 ### Fixed
 
-* Fix wrong url in the `<link rel="alternate" hreflang="x-default">` meta tag.
-* Fix date formatting for the `lastmod` property in the XML sitemap.
+* Fix wrong url in the `<link rel="alternate" hreflang="x-default">` meta tag
+* Fix date formatting for the `lastmod` property in the XML sitemap
 
 ## [0.4.0] - 2019-02-08
 
@@ -55,7 +63,7 @@
 ### Fixed
 
 * Update Composer package name from `wanze/processwire-seomaestro` to `wanze/seo-maestro` to
-allow installations via Composer.
+allow installations via Composer
 
 ## [0.1.0] - 2019-02-04
 

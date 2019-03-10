@@ -33,7 +33,7 @@ The _Seo Maestro_ module offers the following configuration:
 * **`Enable sitemap generation`** Automatically generates and maintains a sitemap file.
 * **`Sitemap path`** Path and filename of the sitemap relative from the ProcessWire root directory.
 * **`Cache time`** A time in minutes how long the sitemap should be cached.
-* **`Base url`** The base url used for all page links in the sitemap, e.g. `https://yourdomain.com`. If empty, the current domain is used.
+* **`Base url`** The base url used for all page links in the sitemap and URL metatags, e.g. `https://yourdomain.com`. If empty, the current domain is used.
 * **`Default language`** 2-letter language code of the default language, needed to ensure a correct sitemap for
 multilanguage sites.
 
@@ -58,7 +58,8 @@ one is used. For example, `{images}` would pick the first image from the `images
 
 ## XML Sitemap
 
-If enabled, the module hooks after `ProcessPageView::finished` to generate the XML sitemap after the request is finished.
+If enabled, the module hooks after `ProcessPageView::finished` to generate the XML sitemap after the request has
+been handled by ProcessWire.
 
 * The sitemap is only generated if the current user is logged in and the current page is an admin page.
 * It only includes pages of templates having a _Seo Maestro_ field, in order to read the sitemap settings.
@@ -77,9 +78,8 @@ Common meta tags that are not managed with the fieldtype, but rendered by defaul
 
 | Tag | Description |
 | --- | --- |
-| `<link rel="canonical">` | The canonical URL of a page, by default equal to the page's url. |
 | `<link rel="alternate">` | Contains the local url of each active page on multi language sites. |
-| `<meta name="generator">` | Let anyone know that your site is powedered by ProcessWire :) |
+| `<meta name="generator">` | Let anyone know that your site is powered by ProcessWire ❤️ |
 
 ### Fieldtype
 
@@ -87,10 +87,10 @@ The following meta data is managed for each page via _Seo Maestro_ field. Meta t
 
 | Group | Tags | Description |
 | --- | --- | --- |
-| `meta` |  `title`<br>`description`<br>`keywords` | Holds the famous `title` and `description` tags that should be optimized for search engines.
-| `opengraph` |  `og:title`<br>`og:description`<br>`og:image`<br>`og:image:alt`<br>`og:type`<br>`og:image`<br>`og:locale`<br>`og:site_name` | By default, title and description inherit the values from the meta group. If an image is specified, the `og:image:width`, `og:image:height` and `og:image:type` tags are included automatically during rendering. |
-| `twitter` |  `twitter:card`<br>`twitter:site`<br>`twitter:creator` | Twitter reads the opengraph meta data as well, except for a few specific tags. |
-| `robots` |  `noindex`<br>`nofollow` | Both tags might be set individually or combined. |
+| `meta` |  `title`<br>`description`<br>`keywords`<br>`canonicalUrl` | Holds the famous `title` and `description` tags that should be optimized for search engines. It is also possible to set a custom canonical URL which by default equals the page's url.
+| `opengraph` |  `title`<br>`description`<br>`image`<br>`imageAlt`<br>`type`<br>`image`<br>`locale`<br>`siteName` | By default, title and description inherit the values from the meta group. If an image is specified, the `og:image:width`, `og:image:height` and `og:image:type` tags are included automatically during rendering. |
+| `twitter` |  `card`<br>`site`<br>`creator` | Twitter reads the Opengraph meta data as well, except for a few specific tags. |
+| `robots` |  `noIndex`<br>`noFollow` | Both tags might be set individually or combined. |
 
 ### Output Meta Tags
 
@@ -98,6 +98,8 @@ Meta tags must be rendered in the `<head>` region of your templates:
 
 ```php
 // Render all meta tags, including the common ones.
+echo $page->seo;
+// or...
 echo $page->seo->render();
 
 // Render only the opengraph tags.

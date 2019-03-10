@@ -38,9 +38,11 @@ class ApiTest extends FunctionalTestCase
     {
         $page = $this->createPage($this->template, '/');
         $page->set('title', 'Seo Maestro');
+        $page->set('name', 'seo-maestro');
         $page->save();
 
         $this->assertEquals('Seo Maestro', $page->get(self::FIELD_NAME)->meta->title);
+        $this->assertEquals('http://localhost/en/seo-maestro/', $page->get(self::FIELD_NAME)->meta->canonicalUrl);
         $this->assertEquals('Seo Maestro', $page->get(self::FIELD_NAME)->opengraph->title);
         $this->assertEquals('Seo Maestro', $page->get(self::FIELD_NAME)->og->title);
         $this->assertEquals('website', $page->get(self::FIELD_NAME)->opengraph->type);
@@ -138,6 +140,8 @@ class ApiTest extends FunctionalTestCase
         $page->save();
 
         $this->assertEquals('Overriden meta title DE', $page->get(self::FIELD_NAME)->meta->title);
+
+        $this->wire('user')->language = $this->wire('languages')->getDefault();
     }
 
     public function test_placeholders_and_inherited_values()
@@ -182,6 +186,26 @@ class ApiTest extends FunctionalTestCase
         $this->assertEquals('https://seomaestro.ch/some-other-image.jpg', $page->get(self::FIELD_NAME)->opengraph->image);
     }
 
+    public function test_custom_canonical_url()
+    {
+        $page = $this->createPage($this->template, '/');
+        $page->title = 'Seo Maestro';
+        $page->get(self::FIELD_NAME)->meta->canonicalUrl = 'http://localhost/en/custom/';
+        $page->save();
+
+        $expected = "<title>Seo Maestro</title>\n<link rel=\"canonical\" href=\"http://localhost/en/custom/\">";
+        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
+
+        // Relative URL's should use the base url from the module config.
+        $page->get(self::FIELD_NAME)->meta->canonicalUrl = '/en/custom/';
+        $this->wire('modules')->get('SeoMaestro')->set('baseUrl', 'https://mydomain.com');
+
+        $expected = "<title>Seo Maestro</title>\n<link rel=\"canonical\" href=\"https://mydomain.com/en/custom/\">";
+        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
+
+        $this->wire('modules')->get('SeoMaestro')->set('baseUrl', '');
+    }
+
     public function test_render_meta()
     {
         $page = $this->createPage($this->template, '/');
@@ -189,12 +213,13 @@ class ApiTest extends FunctionalTestCase
         $page->get(self::FIELD_NAME)->meta->description = "This <a href='/foo'>string</a> <b>should</b><br> be sanitized and encode'd correctly\n";
         $page->save();
 
-        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"This string should be sanitized and encode&#039;d correctly\">";
+        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"This string should be sanitized and encode&#039;d correctly\">\n<link rel=\"canonical\" href=\"http://localhost/en/untitled-page/\">";
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
 
         $page->get(self::FIELD_NAME)->meta->keywords = 'Seo Maestro, ProcessWire, Module';
 
-        $expected .= "\n<meta name=\"keywords\" content=\"Seo Maestro, ProcessWire, Module\">";
+        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"This string should be sanitized and encode&#039;d correctly\">\n<meta name=\"keywords\" content=\"Seo Maestro, ProcessWire, Module\">\n<link rel=\"canonical\" href=\"http://localhost/en/untitled-page/\">";
+
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
     }
 
@@ -276,7 +301,7 @@ class ApiTest extends FunctionalTestCase
         $page->set("name{$de->id}", 'a-page-de');
         $page->save();
 
-        $expected = "<title>A Page</title>\n<meta property=\"og:title\" content=\"A Page\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"http://localhost/en/a-page-en/\">\n<meta name=\"twitter:card\" content=\"summary\">\n<meta name=\"generator\" content=\"ProcessWire\">\n<link rel=\"canonical\" href=\"http://localhost/en/a-page-en/\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"en\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"x-default\">\n<link rel=\"alternate\" href=\"http://localhost/de/a-page-de/\" hreflang=\"de\">";
+        $expected = "<title>A Page</title>\n<link rel=\"canonical\" href=\"http://localhost/en/a-page-en/\">\n<meta property=\"og:title\" content=\"A Page\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"http://localhost/en/a-page-en/\">\n<meta name=\"twitter:card\" content=\"summary\">\n<meta name=\"generator\" content=\"ProcessWire\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"en\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"x-default\">\n<link rel=\"alternate\" href=\"http://localhost/de/a-page-de/\" hreflang=\"de\">";
 
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->render());
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->__toString());

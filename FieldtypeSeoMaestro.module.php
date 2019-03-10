@@ -130,6 +130,11 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
                 'description' => $this->_('A comma-separated list of keywords about the page. This meta tag is *no longer* supported by most search engines.'),
                 'translatable' => true,
             ],
+            'meta_canonicalUrl' => [
+                'label' => $this->_('Canonical URL'),
+                'description' => $this->_('The URL of this page that a search engine thinks is most representative from a set of duplicate pages.'),
+                'translatable' => true,
+            ],
             'opengraph_title' => [
                 'label' => $this->_('Title'),
                 'translatable' => true,
@@ -255,6 +260,10 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
 
         $formManager = new FormManager($this->seoMaestro());
         $form = $formManager->buildForm($this->getSeoData());
+
+        // Remove the canonical URL, there is no need to setup a default value.
+        $form->remove('meta_canonicalUrl');
+
         $formManager->populateValues($form, $values);
 
         $wrapper->import($form->children());

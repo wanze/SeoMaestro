@@ -131,7 +131,7 @@ class PageFieldValue extends WireData
     }
 
     /**
-     * Build some common metatags not configured via fieldtype.
+     * Build common metatags not configured via fieldtype.
      *
      * @return array
      */
@@ -141,12 +141,7 @@ class PageFieldValue extends WireData
         $defaultLang = $this->seoMaestro->get('defaultLanguage') ?: 'en';
         $hasLanguageSupportPageNames = $this->wire('modules')->isInstalled('LanguageSupportPageNames');
 
-        $canonicalUrl = $baseUrl ? $baseUrl . $this->page->url : $this->page->httpUrl;
-
-        $tags = [
-            'meta_generator' => '<meta name="generator" content="ProcessWire">',
-            'link_canonical' => sprintf('<link rel="canonical" href="%s">', $canonicalUrl),
-        ];
+        $tags = ['meta_generator' => '<meta name="generator" content="ProcessWire">'];
 
         if ($hasLanguageSupportPageNames) {
             foreach ($this->wire('languages') ?: [] as $language) {

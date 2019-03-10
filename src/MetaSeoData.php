@@ -19,6 +19,10 @@ class MetaSeoData extends SeoDataBase
      */
     protected function renderValue($name, $value)
     {
+        if ($name === 'canonicalUrl') {
+            return $this->renderCanonicalUrlValue($value);
+        }
+
         if ($this->containsPlaceholder($value)) {
             $value = wirePopulateStringTags($value, $this->pageFieldValue->getPage());
         }
@@ -31,7 +35,7 @@ class MetaSeoData extends SeoDataBase
      */
     protected function sanitizeValue($name, $value)
     {
-        return (string) $value;
+        return (string)$value;
     }
 
     /**
@@ -47,7 +51,15 @@ class MetaSeoData extends SeoDataBase
                 continue;
             }
 
-            $tags[$name] = ($name === 'title') ? $this->renderTitleTag($value) : $this->renderTag($name, $value);
+            if ($name === 'title') {
+                $tag = $this->renderTitleTag($value);
+            } elseif ($name === 'canonicalUrl') {
+                $tag = $this->renderCanonicalUrlTag($value);
+            } else {
+                $tag = $this->renderTag($name, $value);
+            }
+
+            $tags[$name] = $tag;
         }
 
         return $tags;
@@ -61,5 +73,24 @@ class MetaSeoData extends SeoDataBase
     private function renderTag($name, $value)
     {
         return sprintf('<meta name="%s" content="%s">', $name, $value);
+    }
+
+    private function renderCanonicalUrlTag($value)
+    {
+        return sprintf('<link rel="canonical" href="%s">', $value);
+    }
+
+    private function renderCanonicalUrlValue($value)
+    {
+        $baseUrl = $this->seoMaestro->get('baseUrl');
+
+        if ($value) {
+            $canonicalUrl = strpos($value, 'http') === 0 ? $value : $baseUrl . $value;
+        } else {
+            $page = $this->pageFieldValue->getPage();
+            $canonicalUrl = $baseUrl ? $baseUrl . $page->url : $page->httpUrl;
+        }
+
+        return $this->encode($canonicalUrl);
     }
 }
