@@ -4,6 +4,7 @@ namespace SeoMaestro\Test;
 
 use ProcessWire\HookEvent;
 use ProcessWire\Page;
+use SeoMaestro\SitemapItem;
 use SeoMaestro\SitemapManager;
 
 /**
@@ -182,7 +183,7 @@ class SitemapManagerTest extends FunctionalTestCase
         $this->assertSitemapContains($page2->get('name'));
 
         // Exclude $page2
-        $hookId = $this->wire()->addHookAfter('SeoMaestro::sitemapAlwaysExclude', function (HookEvent $event) use ($page2) {
+        $hookId = $this->addHookAfter('SeoMaestro::sitemapAlwaysExclude', function (HookEvent $event) use ($page2) {
             /** @var \ProcessWire\PageArray $pageArray */
             $pageArray = $event->arguments(0);
             $pageArray->add($page2);
@@ -191,8 +192,30 @@ class SitemapManagerTest extends FunctionalTestCase
         $this->sitemapManager->generate($this->sitemap);
         $this->assertSitemapContains($page1->get('name'));
         $this->assertSitemapNotContains($page2->get('name'));
+    }
 
-        $this->wire()->removeHook($hookId);
+    /**
+     * @test
+     * @covers ::generate
+     */
+    public function sitemap_should_contain_items_added_with_hook()
+    {
+        $item = (new SitemapItem())
+            ->set('loc', '/en/my-custom-url')
+            ->set('priority', 'custom-priority')
+            ->set('changefreq', 'changefreq-custom')
+            ->addAlternate('de', '/de/my-custom-url-de');
+
+        $this->addHookAfter('SeoMaestro::sitemapItems', function (HookEvent $event) use ($item) {
+            $event->return = array_merge($event->return, [$item]);
+        });
+
+        $this->sitemapManager->generate($this->sitemap);
+
+        $this->assertSitemapContains($item->loc);
+        $this->assertSitemapContains($item->priority);
+        $this->assertSitemapContains($item->changefreq);
+        $this->assertSitemapContains('/de/my-custom-url-de');
     }
 
     protected function tearDown()

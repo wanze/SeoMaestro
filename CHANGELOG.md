@@ -5,6 +5,7 @@
 ### Added
 
 * The canonical URL is now part of the `meta` group and can be customized ([#4](https://github.com/wanze/SeoMaestro/issues/4))
+* Add possibility to include custom sitemap items by hooking `SeoMaestro::sitemapItems`
 
 ### Fixed
 

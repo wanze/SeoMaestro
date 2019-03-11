@@ -2,6 +2,7 @@
 
 namespace SeoMaestro;
 
+use ProcessWire\Page;
 use ProcessWire\PageArray;
 use ProcessWire\TemplateFile;
 use ProcessWire\WireData;
@@ -18,13 +19,7 @@ class SitemapManager extends WireData
     {
         parent::__construct();
 
-        $this->data = array_merge(
-            [
-                'baseUrl' => '',
-                'defaultLanguage' => 'en',
-            ],
-            $config
-        );
+        $this->data = array_merge(['baseUrl' => '', 'defaultLanguage' => 'en'], $config);
     }
 
     /**
@@ -36,26 +31,37 @@ class SitemapManager extends WireData
      */
     public function generate($sitemapPath)
     {
-        $pages = $this->getPages();
+        $items = $this->buildSitemapItems();
 
-        if (!$pages->count()) {
+        if (!count($items)) {
             return false;
         }
 
-        $sitemap = $this->renderSitemap($pages);
+        $sitemap = $this->renderSitemap($items);
 
         return file_put_contents($sitemapPath, $sitemap);
     }
 
     /**
-     * @return \ProcessWire\PageArray
+     * @return \SeoMaestro\SitemapItem[]
      */
-    protected function getPages()
+    private function buildSitemapItems()
+    {
+        $items = $this->buildSitemapItemsFromPages();
+
+        return $this->wire('modules')->get('SeoMaestro')
+            ->sitemapItems($items);
+    }
+
+    /**
+     * @return \SeoMaestro\SitemapItem[]
+     */
+    private function buildSitemapItemsFromPages()
     {
         $templates = $this->getTemplatesWithSeoMaestroField();
 
         if (!count($templates)) {
-            return new PageArray();
+            return [];
         }
 
         $selector = sprintf('template=%s,template!=admin,id!=%s,include=hidden',
@@ -65,23 +71,25 @@ class SitemapManager extends WireData
 
         $pages = $this->wire('pages')->findMany($selector);
 
+        // Use the guest user while building the sitemap items, to ensure proper page view permissions.
+        $user = $this->wire('users')->getCurrentUser();
         $guest = $this->wire('users')->getGuestUser();
+        $this->wire('users')->setCurrentUser($guest);
 
-        $filtered = [];
+        $items = [];
         foreach ($pages as $page) {
             $field = $templates[$page->template->name];
 
-            if (!$page->viewable($guest) || !$page->get($field)->sitemap->include) {
+            if (!$page->viewable() || !$page->get($field)->sitemap->include) {
                 continue;
             }
 
-            // Set a temporary alias to the sitemap data, referenced during rendering.
-            $page->set('seoMaestroSitemapData', $page->get($field)->sitemap);
-
-            $filtered[] = $page;
+            $items = array_merge($items, $this->buildSitemapItemsFromPage($page, $page->get($field)->sitemap));
         }
 
-        return (new PageArray())->import($filtered);
+        $this->wire('users')->setCurrentUser($user);
+
+        return $items;
     }
 
     /**
@@ -96,37 +104,19 @@ class SitemapManager extends WireData
         $excluded = (new PageArray())
             ->add($page404);
 
-        // Allow to exclude additional pages by hooking SeoMaestro::sitemapAlwaysExclude().
         return $this->wire('modules')->get('SeoMaestro')
             ->sitemapAlwaysExclude($excluded);
     }
 
     /**
-     * Render the sitemap with the given pages.
-     *
-     * @param \ProcessWire\PageArray $pages
-     *
      * @return string
      */
-    private function renderSitemap(PageArray $pages)
+    private function renderSitemap(array $items)
     {
         $template = new TemplateFile(dirname(__DIR__) . '/templates/sitemap.xml.php');
-        $template->set('pages', $pages);
-        $template->set('baseUrl', rtrim($this->get('baseUrl'), '/'));
-        $template->set('defaultLanguageCode', $this->get('defaultLanguage'));
-        $template->set('hasLanguageSupport', $this->wire('modules')->isInstalled('LanguageSupport'));
-        $template->set('hasLanguageSupportPageNames', $this->wire('modules')->isInstalled('LanguageSupportPageNames'));
+        $template->set('items', $items);
 
-        // Use the guest user while rendering, to ensure proper page view permissions.
-        $user = $this->wire('users')->getCurrentUser();
-        $guest = $this->wire('users')->getGuestUser();
-        $this->wire('users')->setCurrentUser($guest);
-
-        $sitemap = $template->render();
-
-        $this->wire('users')->setCurrentUser($user);
-
-        return $sitemap;
+        return $template->render();
     }
 
     /**
@@ -145,5 +135,64 @@ class SitemapManager extends WireData
         }
 
         return $templates;
+    }
+
+    /**
+     * @return \SeoMaestro\SitemapItem[]
+     */
+    private function buildSitemapItemsFromPage(Page $page, SitemapSeoData $sitemapData)
+    {
+        $languageSupport = $this->wire('modules')->isInstalled('LanguageSupport');
+        $languageSupportPageNames = $this->wire('modules')->isInstalled('LanguageSupportPageNames');
+        $items = [];
+
+        if ($languageSupport && $languageSupportPageNames) {
+            foreach ($this->wire('languages') as $language) {
+                if (!$page->viewable($language)) {
+                    continue;
+                }
+
+                $loc = $this->get('baseUrl') ? $this->get('baseUrl') . $page->localUrl($language) : $page->localHttpUrl($language);
+
+                $item = (new SitemapItem())
+                    ->set('priority', $sitemapData->priority)
+                    ->set('lastmod', $this->getLastMod($page))
+                    ->set('changefreq', $sitemapData->changeFrequency)
+                    ->set('loc', $loc);
+
+                $this->addAlternatesToSitemapItem($page, $item);
+                $items[] = $item;
+            }
+
+            return $items;
+        }
+
+        // Single language setups.
+        $item = (new SitemapItem())
+            ->set('priority', $sitemapData->priority)
+            ->set('lastmod', $this->getLastMod($page))
+            ->set('changefreq', $sitemapData->changeFrequency)
+            ->set('loc', $this->get('baseUrl') ? $this->get('baseUrl') . $page->url : $page->httpUrl);
+
+        return [$item];
+    }
+
+    private function addAlternatesToSitemapItem(Page $page, SitemapItem $item)
+    {
+        foreach ($this->wire('languages') as $language) {
+            if (!$page->viewable($language)) {
+                continue;
+            }
+
+            $code = $language->isDefault() ? $this->get('defaultLanguage') : $language->name;
+            $loc = $this->get('baseUrl') ? $this->get('baseUrl') . $page->localUrl($language) : $page->localHttpUrl($language);
+
+            $item->addAlternate($code, $loc);
+        }
+    }
+
+    private function getLastMod(Page $page)
+    {
+        return date('c', $page->modified);
     }
 }
