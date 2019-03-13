@@ -2,14 +2,16 @@
 
 ## [Unreleased]
 
-### Added
-
-* The canonical URL is now part of the `meta` group and can be customized ([#4](https://github.com/wanze/SeoMaestro/issues/4))
-* Add possibility to include custom sitemap items by hooking `SeoMaestro::sitemapItems`
+## [0.6.0] - 2019-03-13
 
 ### Fixed
 
 * Fix date formatting for the `lastmod` property in the XML sitemap for single language setups 🤦‍️
+
+### Added
+
+* The canonical URL is now part of the `meta` group and can be customized ([#4](https://github.com/wanze/SeoMaestro/issues/4))
+* Add possibility to include custom sitemap items by hooking `SeoMaestro::sitemapItems`
 
 ## [0.5.0] - 2019-02-17
 
@@ -70,7 +72,8 @@ allow installations via Composer
 
 * Initial release of the module 🐣
 
-[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.6.0
 [0.5.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.5.0
 [0.4.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.4.0
 [0.3.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.3.0
