@@ -237,6 +237,38 @@ class ApiTest extends FunctionalTestCase
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->opengraph->render());
     }
 
+    /**
+     * @dataProvider opengraphImageSizesDataProvider
+     */
+    public function test_render_opengraph_resize($width, $height, $expectedVariation)
+    {
+        $this->addImageFieldToTemplate('imageOg');
+
+        $page = $this->createPage($this->template, '/');
+        $page->title = 'Seo Maestro';
+        $page->get('imageOg')->add(dirname(__DIR__) . '/fixtures/schynige-platte.jpg');
+        $page->get(self::FIELD_NAME)->opengraph->image = '{imageOg}';
+        $page->save();
+
+        // Restrict opengraph image size on field setting level.
+        $field = $this->wire('fields')->get(self::FIELD_NAME);
+        $field->set('opengraph_image_width', $width);
+        $field->set('opengraph_image_height', $height);
+        $field->save();
+
+        $expected = sprintf("<meta property=\"og:title\" content=\"Seo Maestro\">\n<meta property=\"og:image\" content=\"http://localhost/site/assets/files/%s/schynige-platte.%s.jpg\">\n<meta property=\"og:image:type\" content=\"image/jpeg\">\n<meta property=\"og:image:width\" content=\"800\">\n<meta property=\"og:image:height\" content=\"600\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"%s\">", $page->id, $expectedVariation, $page->httpUrl);
+        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->opengraph->render());
+    }
+
+    public function opengraphImageSizesDataProvider()
+    {
+        return [
+            [800, 600, '800x600'],
+            [800, null, '800x0'],
+            [null, 600, '0x600'],
+        ];
+    }
+
     public function test_render_twitter()
     {
         $page = $this->createPage($this->template, '/');

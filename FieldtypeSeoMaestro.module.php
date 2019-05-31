@@ -261,8 +261,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
         $formManager = new FormManager($this->seoMaestro());
         $form = $formManager->buildForm($this->getSeoData());
 
-        // Remove the canonical URL, there is no need to setup a default value.
-        $form->remove('meta_canonicalUrl');
+        $this->alterConfigForm($form);
 
         $formManager->populateValues($form, $values);
 
@@ -284,6 +283,30 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
             parent::___getConfigAllowContext($field),
             $configGroups
         );
+    }
+
+    private function alterConfigForm(InputfieldWrapper $form)
+    {
+        // Remove the canonical URL, there is no need to setup a default value.
+        $form->remove('meta_canonicalUrl');
+
+        // Add the possibility to set a thumbnail size for the opengraph image.
+        $image = $form->get('opengraph_image');
+        $image->columnWidth = 50;
+
+        $width = $this->wire('modules')->get('InputfieldInteger');
+        $width->attr('name', 'opengraph_image_width');
+        $width->label = $this->_('Image Width');
+        $width->description = $this->_('Optionally specify the width of the thumbnail when referencing an existing image.');
+        $width->columnWidth = 25;
+        $form->insertAfter($width, $image);
+
+        $height = $this->wire('modules')->get('InputfieldInteger');
+        $height->attr('name', 'opengraph_image_height');
+        $height->label = $this->_('Image Height');
+        $height->description = $this->_('Optionally specify the height of the thumbnail when referencing an existing image.');
+        $height->columnWidth = 25;
+        $form->insertAfter($height, $width);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace SeoMaestro;
 
+use ProcessWire\Pageimage;
 use ProcessWire\Pageimages;
 use function ProcessWire\wirePopulateStringTags;
 
@@ -140,7 +141,29 @@ class OpengraphSeoData extends SeoDataBase
         }
 
         // We always pick the first image.
-        return $pageImages->first();
+        $pageImage = $pageImages->first();
+
+        return $this->resizeImage($pageImage);
+    }
+
+    private function resizeImage(Pageimage $pageImage)
+    {
+        $field = $this->getFieldInCurrentContext();
+
+        $width = $field->get('opengraph_image_width');
+        $height = $field->get('opengraph_image_height');
+
+        if ($width || $height) {
+            if ($width && $height) {
+                $pageImage = $pageImage->size((int)$width, (int)$height);
+            } else if ($width) {
+                $pageImage = $pageImage->width((int)$width);
+            } else if ($height) {
+                $pageImage = $pageImage->height((int)$height);
+            }
+        }
+
+        return $pageImage;
     }
 
     /**

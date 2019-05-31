@@ -190,12 +190,7 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
     {
         $langId = $this->getCurrentLanguageId();
 
-        // Get the field in the context of the page's template, config might differ per template.
-        $field = $this->pageFieldValue
-            ->getPage()
-            ->get('template')
-            ->get('fieldgroup')
-            ->getField($this->pageFieldValue->getField(), true);
+        $field = $this->getFieldInCurrentContext();
 
         $key = sprintf('%s_%s', $this->group, $key);
 
@@ -248,5 +243,19 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
         }
 
         return $currentLanguage->isDefault() ? '' : $currentLanguage->id;
+    }
+
+    /**
+     * Get the field in the context of the page's template.
+     *
+     * @return \ProcessWire\Field
+     */
+    protected function getFieldInCurrentContext()
+    {
+        return $this->pageFieldValue
+            ->getPage()
+            ->get('template')
+            ->get('fieldgroup')
+            ->getField($this->pageFieldValue->getField(), true);
     }
 }
