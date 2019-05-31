@@ -57,6 +57,9 @@ class InputfieldMetaData extends InputfieldFieldset
         $inherit->attr('name', $this->inputfield->attr('name') . '_inherit');
         $inherit->attr('checked', $this->inputfield->attr('value') === 'inherit');
         $inherit->columnWidth = 10;
+        // Hiding the label in the header should resolve https://github.com/wanze/SeoMaestro/issues/9, but it does not work.
+        // I think this is a bug, introduced with this commit: https://github.com/processwire/processwire/commit/5b45d17991b9de4755a1ab859bf06958812da0f6#diff-da75cd1e018eb711563f54af265fd9e3
+        $inherit->skipLabel = Inputfield::skipLabelHeader;
         $inherit->addClass('seomaestro-inputfield-embed', 'wrapClass');
         $inherit->wrapAttr('data-seomaestro-metadata-inherit', $this->inputfield->name);
 
