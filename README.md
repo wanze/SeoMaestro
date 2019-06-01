@@ -166,3 +166,74 @@ Find all pages excluded from the sitemap inheriting all meta and opengraph data:
 ```
 $pages->find('seo.sitemap_include=0,seo.meta_inherit=1,seo.opengraph_inherit=1');
 ```
+
+## Hooks
+
+Several hooks are available for developers to customize the behaviour of the module.
+
+### ___renderMetatags
+
+Add, remove or modify the rendered metatags of a group.
+
+```php
+// Remove the description and canonical URL.
+$wire->addHookAfter('SeoMaestro::renderMetatags', function (HookEvent $event) {
+    $tags = $event->arguments(0);
+    $group = $event->arguments(1);
+
+    if ($group === 'meta') {
+        unset($tags['description']);
+        unset($tags['canonicalUrl']);
+        $event->return = $tags;
+    }
+});
+```
+
+### ___renderSeoDataValue
+
+Modify the value of meta data after being rendered.
+
+```php
+// Add the brand name after the title. 
+$wire->addHookAfter('SeoMaestro::renderSeoDataValue', function (HookEvent $event) {
+    $group = $event->arguments(0);
+    $name = $event->arguments(1);
+    $value = $event->arguments(2);
+    
+    if ($group === 'meta' && $name === 'title') {
+        $event->return = $value . ' | acme.com';
+    }
+}
+```
+
+### ___alterSeoDataForm
+
+Customize the inputfields of the form containing the SEO data, e.g. change collapsed states or descriptions.
+
+### ___sitemapAlwaysExclude
+
+Specify pages that should never appear in the sitemap, regardless of sitemap settings on page level.
+
+```php
+$wire->addHookAfter('SeoMaestro::sitemapAlwaysExclude', function (HookEvent $event) {
+    $pageArray = $event->arguments(0);
+    $pageArray->add($excludedPage);
+});
+```
+
+### ___sitemapItems
+
+Add or modify items in the sitemap.
+
+```php
+$item = (new SitemapItem())
+    ->set('loc', '/en/my-custom-url')
+    ->set('priority', 'custom-priority')
+    ->set('changefreq', 'changefreq-custom')
+    ->addAlternate('de', '/de/my-custom-url-de');
+
+$wire->addHookAfter('SeoMaestro::sitemapItems', function (HookEvent $event) use ($item) {
+    $event->return = array_merge($event->return, [$item]);
+});
+```
+
