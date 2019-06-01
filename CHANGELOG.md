@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.7.0] - 2019-06-01
+
+### Fixed
+
+* Fix label being showed above the "inherit" checkbox ([#9](https://github.com/wanze/SeoMaestro/issues/9))
+
+### Added
+
+* Add the possibility to resize the Opengraph image when referencing a page image by specifying a width and/or height ([#7](https://github.com/wanze/SeoMaestro/issues/7))
+* Opengraph image: If the referenced image field is empty and pulls the image from another page (default value), the
+module now substitutes the default image ([#8](https://github.com/wanze/SeoMaestro/issues/8))
+
 ## [0.6.0] - 2019-03-13
 
 ### Fixed
@@ -72,7 +84,8 @@ allow installations via Composer
 
 * Initial release of the module 🐣
 
-[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.7.0...HEAD
+[0.6.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.7.0
 [0.6.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.6.0
 [0.5.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.5.0
 [0.4.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.4.0

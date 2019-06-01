@@ -48,7 +48,7 @@ class OpengraphSeoData extends SeoDataBase
      */
     protected function sanitizeValue($name, $value)
     {
-        return (string) $value;
+        return (string)$value;
     }
 
     /**
@@ -150,8 +150,8 @@ class OpengraphSeoData extends SeoDataBase
             return null;
         }
 
-        $defaultPage = $this->wire('pages')->get((int) $field->get('defaultValuePage'));
-        if($defaultPage->id && $defaultPage->id !== $this->pageFieldValue->getPage()->id) {
+        $defaultPage = $this->wire('pages')->get((int)$field->get('defaultValuePage'));
+        if ($defaultPage->id && $defaultPage->id !== $this->pageFieldValue->getPage()->id) {
             $pageImages = $defaultPage->getUnformatted($fieldName);
             if (!$pageImages->count()) {
                 return null;

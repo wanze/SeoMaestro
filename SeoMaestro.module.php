@@ -127,7 +127,7 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
     /**
      * Hook to modify sitemap items.
      *
-     * Use this hook to modify or add or modify items in the sitemap.
+     * Use this hook to add or modify items in the sitemap.
      *
      * @param \SeoMaestro\SitemapItem[] $sitemapItems
      *
