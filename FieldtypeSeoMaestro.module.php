@@ -252,7 +252,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
         $info = $this->wire('modules')->get('InputfieldMarkup');
         $info->label = $this->_('Info');
         $info->attr('value',
-            "Set default values for your meta tags and the sitemap behaviour. Each page inherits these values by default, but may override them individually.\n For text based metatags, enter a string or a placeholder in the form of `{title}` to map a page field value.\n\n*Note:* Any of the default values might be overridden per template by editing this field in a template context.");
+            "Set default values for your meta tags and the sitemap behaviour. Each page inherits these values by default, but may override them individually.\n For text based metatags, enter a string or a placeholder in the form of `{title}` to map a page field value.\n\n*Note:* Any of the default values might be overridden per template by editing this field in the context of a template.");
         $info->textformatters = ['TextformatterMarkdownExtra'];
         $wrapper->append($info);
 
@@ -297,14 +297,14 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
         $width = $this->wire('modules')->get('InputfieldInteger');
         $width->attr('name', 'opengraph_image_width');
         $width->label = $this->_('Image Width');
-        $width->description = $this->_('Optionally specify the width of the thumbnail when referencing an existing image.');
+        $width->description = $this->_('Optionally specify the width when referencing an image field.');
         $width->columnWidth = 25;
         $form->insertAfter($width, $image);
 
         $height = $this->wire('modules')->get('InputfieldInteger');
         $height->attr('name', 'opengraph_image_height');
         $height->label = $this->_('Image Height');
-        $height->description = $this->_('Optionally specify the height of the thumbnail when referencing an existing image.');
+        $height->description = $this->_('Optionally specify the height when referencing an image field.');
         $height->columnWidth = 25;
         $form->insertAfter($height, $width);
     }

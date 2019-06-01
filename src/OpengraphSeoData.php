@@ -156,9 +156,9 @@ class OpengraphSeoData extends SeoDataBase
         if ($width || $height) {
             if ($width && $height) {
                 $pageImage = $pageImage->size((int)$width, (int)$height);
-            } else if ($width) {
+            } elseif ($width) {
                 $pageImage = $pageImage->width((int)$width);
-            } else if ($height) {
+            } elseif ($height) {
                 $pageImage = $pageImage->height((int)$height);
             }
         }
