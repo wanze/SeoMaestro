@@ -136,14 +136,31 @@ class OpengraphSeoData extends SeoDataBase
     {
         $pageImages = $this->pageFieldValue->getPage()->getUnformatted($fieldName);
 
-        if (!$pageImages instanceof Pageimages || !$pageImages->count()) {
+        if (!$pageImages instanceof Pageimages) {
             return null;
         }
 
-        // We always pick the first image.
-        $pageImage = $pageImages->first();
+        if ($pageImages->count()) {
+            return $this->resizeImage($pageImages->first());
+        }
 
-        return $this->resizeImage($pageImage);
+        // Check if the image falls back to an image from another page.
+        $field = $this->wire('fields')->get($fieldName);
+        if (!$field->get('defaultValuePage')) {
+            return null;
+        }
+
+        $defaultPage = $this->wire('pages')->get((int) $field->get('defaultValuePage'));
+        if($defaultPage->id && $defaultPage->id !== $this->pageFieldValue->getPage()->id) {
+            $pageImages = $defaultPage->getUnformatted($fieldName);
+            if (!$pageImages->count()) {
+                return null;
+            }
+
+            return $this->resizeImage($pageImages->first());
+        }
+
+        return null;
     }
 
     private function resizeImage(Pageimage $pageImage)

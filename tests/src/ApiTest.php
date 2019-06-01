@@ -237,6 +237,27 @@ class ApiTest extends FunctionalTestCase
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->opengraph->render());
     }
 
+    public function test_render_opengraph_fallback_to_default_image()
+    {
+        $field = $this->addImageFieldToTemplate('imageOg');
+
+        $defaultPage = $this->createPage($this->template, '/', 'defaultPage');
+        $defaultPage->title = 'Default Page holding the fallback image';
+        $defaultPage->get('imageOg')->add(dirname(__DIR__) . '/fixtures/schynige-platte.jpg');
+        $defaultPage->save();
+
+        $field->set('defaultValuePage', $defaultPage->id);
+        $field->save();
+
+        $page = $this->createPage($this->template, '/');
+        $page->title = 'Seo Maestro';
+        $page->get(self::FIELD_NAME)->opengraph->image = '{imageOg}';
+        $page->save();
+
+        $expected = sprintf("<meta property=\"og:title\" content=\"Seo Maestro\">\n<meta property=\"og:image\" content=\"http://localhost/site/assets/files/%s/schynige-platte.jpg\">\n<meta property=\"og:image:type\" content=\"image/jpeg\">\n<meta property=\"og:image:width\" content=\"1024\">\n<meta property=\"og:image:height\" content=\"768\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"%s\">", $defaultPage->id, $page->httpUrl);
+        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->opengraph->render());
+    }
+
     /**
      * @dataProvider opengraphImageSizesDataProvider
      */
