@@ -223,6 +223,18 @@ class ApiTest extends FunctionalTestCase
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
     }
 
+    public function test_render_meta_title_with_custom_format()
+    {
+        $page = $this->createPage($this->template, '/');
+        $page->title = 'Seo Maestro';
+        $page->save();
+
+        $this->field->set('meta_title_format', '{meta_title} | acme.com');
+        $this->field->save();
+
+        $this->assertEquals('Seo Maestro | acme.com', $page->get(self::FIELD_NAME)->meta->title);
+    }
+
     public function test_render_opengraph()
     {
         $this->addImageFieldToTemplate('imageOg');

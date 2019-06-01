@@ -7,6 +7,7 @@ export default class InputfieldGooglePreview {
         this.$inputDesc = document.querySelector(`[name="${fieldName}_meta_description"]`);
         this.$desc = $container.querySelector('[data-desc]');
         this.$inputDescInherit = document.querySelector(`[name="${fieldName}_meta_description_inherit"]`);
+        this.titleFormat = $container.dataset.seomaestroTitleFormat;
 
         this.maxLengths = {
             title: 60,
@@ -24,11 +25,11 @@ export default class InputfieldGooglePreview {
     initEventListeners() {
         ['keyup', 'blur'].forEach((event) => {
             this.$inputTitle.addEventListener(event, () => {
-                this.$title.innerHTML = this.truncateString(this.$inputTitle.value, this.maxLengths.title);
+                this.$title.innerHTML = this.renderTitleFromInput();
             });
 
             this.$inputDesc.addEventListener(event, () => {
-                this.$desc.innerHTML = this.truncateString(this.$inputDesc.value, this.maxLengths.desc);
+                this.$desc.innerHTML = this.renderDescriptionFromInput();
             });
         });
 
@@ -39,7 +40,7 @@ export default class InputfieldGooglePreview {
                 this.$title.innerHTML = this.truncateString(this.$title.dataset.title, maxLength);
             } else {
                 if (this.$inputTitle.value) {
-                    this.$title.innerHTML = this.truncateString(this.$inputTitle.value, maxLength);
+                    this.$title.innerHTML = this.renderTitleFromInput();
                 }
             }
         });
@@ -51,12 +52,26 @@ export default class InputfieldGooglePreview {
                 this.$desc.innerHTML = this.truncateString(this.$desc.dataset.desc, maxLength);
             } else {
                 if (this.$inputDesc.value) {
-                    this.$desc.innerHTML = this.truncateString(this.$inputDesc.value, maxLength);
+                    this.$desc.innerHTML = this.renderDescriptionFromInput();
                 }
             }
         });
 
         return this;
+    }
+
+    renderTitleFromInput() {
+        if (!this.titleFormat) {
+            return this.truncateString(this.$inputTitle.value, this.maxLengths.title);
+        }
+
+        const title = this.titleFormat.replace('{meta_title}', this.$inputTitle.value);
+
+        return this.truncateString(title, this.maxLengths.title);
+    }
+
+    renderDescriptionFromInput() {
+        return this.truncateString(this.$inputDesc.value, this.maxLengths.desc);
     }
 
     truncateString(string, maxLength) {

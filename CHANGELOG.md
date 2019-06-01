@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+* Add support to extend the rendered page title with additional information such as the domain or site name ([#11](https://github.com/wanze/SeoMaestro/issues/11))
+
 ## [0.7.0] - 2019-06-01
 
 ### Fixed
@@ -85,7 +89,7 @@ allow installations via Composer
 * Initial release of the module 🐣
 
 [Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.7.0...HEAD
-[0.6.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.7.0
+[0.7.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.7.0
 [0.6.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.6.0
 [0.5.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.5.0
 [0.4.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.4.0

@@ -24,9 +24,12 @@ class InputfieldGooglePreview extends InputfieldMarkup
 
         $this->pageFieldValue = $pageFieldValue;
 
+        $field = $this->getFieldInCurrentContext();
+
         $this->addClass('seomaestro-googlepreview');
-        $this->wrapAttr('data-seomaestro-googlepreview', $this->pageFieldValue->getField()->name);
-        $this->label = 'Google Preview';
+        $this->wrapAttr('data-seomaestro-googlepreview', $field->name);
+        $this->wrapAttr('data-seomaestro-title-format', $field->get('meta_title_format'));
+        $this->label = $this->_('Google Preview');
         $this->skipLabel = Inputfield::skipLabelHeader;
     }
 
@@ -41,5 +44,19 @@ class InputfieldGooglePreview extends InputfieldMarkup
         ));
 
         return parent::___render();
+    }
+
+    /**
+     * Get the field in the context of the page's template.
+     *
+     * @return \ProcessWire\Field
+     */
+    private function getFieldInCurrentContext()
+    {
+        return $this->pageFieldValue
+            ->getPage()
+            ->get('template')
+            ->get('fieldgroup')
+            ->getField($this->pageFieldValue->getField(), true);
     }
 }

@@ -27,6 +27,13 @@ class MetaSeoData extends SeoDataBase
             $value = wirePopulateStringTags($value, $this->pageFieldValue->getPage());
         }
 
+        if ($name === 'title') {
+            $field = $this->getFieldInCurrentContext();
+            if ($field->get('meta_title_format')) {
+                $value = str_replace('{meta_title}', $value, $field->get('meta_title_format'));
+            }
+        }
+
         return $this->encode($value);
     }
 

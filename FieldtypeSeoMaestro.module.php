@@ -291,15 +291,15 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
         $form->remove('meta_canonicalUrl');
 
         // Add the possibility to set a thumbnail size for the opengraph image.
-        $image = $form->get('opengraph_image');
-        $image->columnWidth = 50;
+        $opengraphImage = $form->get('opengraph_image');
+        $opengraphImage->columnWidth = 50;
 
         $width = $this->wire('modules')->get('InputfieldInteger');
         $width->attr('name', 'opengraph_image_width');
         $width->label = $this->_('Image Width');
         $width->description = $this->_('Optionally specify the width when referencing an image field.');
         $width->columnWidth = 25;
-        $form->insertAfter($width, $image);
+        $form->insertAfter($width, $opengraphImage);
 
         $height = $this->wire('modules')->get('InputfieldInteger');
         $height->attr('name', 'opengraph_image_height');
@@ -307,6 +307,14 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
         $height->description = $this->_('Optionally specify the height when referencing an image field.');
         $height->columnWidth = 25;
         $form->insertAfter($height, $width);
+
+        $metaTitle = $form->get('meta_title');
+        $metaTitleFormat = $this->wire('modules')->get('InputfieldText');
+        $metaTitleFormat->attr('name', 'meta_title_format');
+        $metaTitleFormat->label = $this->_('Title Format');
+        $metaTitleFormat->description = $this->_('Optionally decorate the rendered title with additional information. A common pattern is to include the site name or domain. Use the `{meta_title}` placeholder to substitute the rendered title, for example `{meta_title} | acme.com`.');
+        $metaTitleFormat->useLanguages = true;
+        $form->insertAfter($metaTitleFormat, $metaTitle);
     }
 
     /**

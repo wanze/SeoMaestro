@@ -8,10 +8,11 @@
 A ProcessWire module helping you to manage SEO related tasks like a boss! 😎✌️
 
 * Automatically generates and maintains a XML sitemap from your pages.
-* Includes a Fieldtype and Inputfield to manage sitemap settings and meta data for pages (title, description, opengraph, twitter etc.).
+* Includes a Fieldtype and Inputfield to manage sitemap settings and meta data for pages (title, description, canonical url, Opengraph, Twitter etc.).
 * Multi language support for the sitemap and meta data.
 * Configure default values for meta data on template level and let pages inherit or overwrite them individually.
 * Map existing fields to meta data, reducing the need to duplicate content.
+* Live preview for content editors how the entered meta data appears on Google.
 
 ## Requirements
 
@@ -102,7 +103,7 @@ echo $page->seo;
 // or...
 echo $page->seo->render();
 
-// Render only the opengraph tags.
+// Render groups individually, e.g. the opengraph meta data.
 echo $page->seo->opengraph->render();
 ```
 
@@ -147,8 +148,8 @@ $user->language = $current;
 ### Available Selectors
 
 The _Seo Maestro_ fieldtype does not support to query meta data with selectors, e.g. `seo.meta.title%=foo` won't work.
-All meta data is stored as JSON, allowing to add new data anytime without the need for database migrations. However, the
-module stores some useful flags whenever a page is saved, and these flags can be used in selectors:
+All meta data is stored as JSON, allowing to add new data anytime without the need to change the database schema.
+However, the module stores some useful flags whenever a page is saved, and these flags can be used in selectors:
 
 * `sitemap_include` to quickly query if a page is included or excluded in the sitemap.
 * `<group>_inherit` is set to `1`, if a page inherits _all_ meta data of a given group.
@@ -212,7 +213,8 @@ Customize the inputfields of the form containing the SEO data, e.g. change colla
 
 ### ___sitemapAlwaysExclude
 
-Specify pages that should never appear in the sitemap, regardless of sitemap settings on page level.
+Specify pages that should never appear in the sitemap, regardless of sitemap settings on page level. The `404` page
+is excluded by default.
 
 ```php
 $wire->addHookAfter('SeoMaestro::sitemapAlwaysExclude', function (HookEvent $event) {
