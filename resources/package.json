@@ -1,14 +1,14 @@
 {
   "name": "seomaestro",
-  "version": "0.4.0",
+  "version": "0.7.0",
   "description": "Frontend for the SeoMaestro module.",
   "main": "js/index.js",
   "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
-    "parcel-bundler": "^1.11.0",
-    "sass": "^1.17.0"
+    "parcel-bundler": "^1.12.3",
+    "sass": "^1.21.0"
   },
   "scripts": {
     "dev": "./node_modules/.bin/parcel js/index.js -d ../ -o InputfieldSeoMaestro",
