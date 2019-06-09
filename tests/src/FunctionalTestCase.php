@@ -126,7 +126,7 @@ abstract class FunctionalTestCase extends TestCase
     protected function tearDown()
     {
         foreach ($this->pages as $page) {
-            $this->wire->wire('pages')->delete($page);
+            $this->wire->wire('pages')->delete($page, true);
         }
 
         foreach ($this->templates as $template) {

@@ -3,6 +3,7 @@
 namespace SeoMaestro\Test;
 
 use ProcessWire\WireException;
+use SeoMaestro\StructuredData\BreadcrumbStructuredData;
 
 /**
  * Tests for the API provided by SeoMaestro.
@@ -52,6 +53,7 @@ class ApiTest extends FunctionalTestCase
         $this->assertEquals(1, $page->get(self::FIELD_NAME)->sitemap->include);
         $this->assertEquals(0.5, $page->get(self::FIELD_NAME)->sitemap->priority);
         $this->assertEquals('monthly', $page->get(self::FIELD_NAME)->sitemap->changeFrequency);
+        $this->assertInstanceOf(BreadcrumbStructuredData::class, $page->get(self::FIELD_NAME)->structuredData->breadcrumb);
     }
 
     /**
@@ -114,8 +116,12 @@ class ApiTest extends FunctionalTestCase
             ],
             [
                 'sitemap',
-                'include1'
+                'include1',
             ],
+            [
+                'structuredData',
+                'crumbbreads',
+            ]
         ];
     }
 
@@ -355,6 +361,41 @@ class ApiTest extends FunctionalTestCase
         $this->assertEquals('Seo &amp; Maestro', $page->get(self::FIELD_NAME)->meta->title);
     }
 
+    public function test_structured_data_breadcrumb()
+    {
+        $parent = $this->createPage($this->template, '/', 'parent');
+        $parent->title = 'Parent';
+        $parent->save();
+
+        $child = $this->createPage($this->template, $parent, 'child');
+        $child->title = 'Child';
+        $child->save();
+
+        $expected = '<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+  {
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Parent",
+    "item": "http://localhost/en/parent/"
+  },
+  {
+    "@type": "ListItem",
+    "position": 2,
+    "name": "Child",
+    "item": "http://localhost/en/parent/child/"
+  }
+  ]
+}
+</script>';
+
+        $this->assertInstanceOf(BreadcrumbStructuredData::class, $child->get(self::FIELD_NAME)->structuredData->breadcrumb);
+        $this->assertEquals($expected, $child->get(self::FIELD_NAME)->structuredData->breadcrumb->render());
+    }
+
     public function test_render_all_metatags()
     {
         $page = $this->createPage($this->template, '/', 'a-page-en');
@@ -366,7 +407,30 @@ class ApiTest extends FunctionalTestCase
         $page->set("name{$de->id}", 'a-page-de');
         $page->save();
 
-        $expected = "<title>A Page</title>\n<link rel=\"canonical\" href=\"http://localhost/en/a-page-en/\">\n<meta property=\"og:title\" content=\"A Page\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"http://localhost/en/a-page-en/\">\n<meta name=\"twitter:card\" content=\"summary\">\n<meta name=\"generator\" content=\"ProcessWire\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"en\">\n<link rel=\"alternate\" href=\"http://localhost/en/a-page-en/\" hreflang=\"x-default\">\n<link rel=\"alternate\" href=\"http://localhost/de/a-page-de/\" hreflang=\"de\">";
+        $expected = '<title>A Page</title>
+<link rel="canonical" href="http://localhost/en/a-page-en/">
+<meta property="og:title" content="A Page">
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://localhost/en/a-page-en/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+  {
+    "@type": "ListItem",
+    "position": 1,
+    "name": "A Page",
+    "item": "http://localhost/en/a-page-en/"
+  }
+  ]
+}
+</script>
+<meta name="generator" content="ProcessWire">
+<link rel="alternate" href="http://localhost/en/a-page-en/" hreflang="en">
+<link rel="alternate" href="http://localhost/en/a-page-en/" hreflang="x-default">
+<link rel="alternate" href="http://localhost/de/a-page-de/" hreflang="de">';
 
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->render());
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->__toString());

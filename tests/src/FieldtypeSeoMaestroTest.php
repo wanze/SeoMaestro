@@ -57,6 +57,7 @@ class FieldtypeSeoMaestroTest extends FunctionalTestCase
             'opengraph_inherit' => 1,
             'twitter_inherit' => 1,
             'robots_inherit' => 1,
+            'structuredData_inherit' => 1,
             'sitemap_inherit' => 1,
             'sitemap_include' => 1,
         ];
@@ -151,6 +152,7 @@ class FieldtypeSeoMaestroTest extends FunctionalTestCase
                     'opengraph_inherit' => 1,
                     'twitter_inherit' => 1,
                     'robots_inherit' => 1,
+                    'structuredData_inherit' => 1,
                     'sitemap_inherit' => 1,
                     'sitemap_include' => 1,
                 ]
@@ -164,6 +166,7 @@ class FieldtypeSeoMaestroTest extends FunctionalTestCase
                     'opengraph_inherit' => 1,
                     'twitter_inherit' => 1,
                     'robots_inherit' => 1,
+                    'structuredData_inherit' => 1,
                     'sitemap_inherit' => 1,
                     'sitemap_include' => 1,
                 ]
@@ -177,6 +180,7 @@ class FieldtypeSeoMaestroTest extends FunctionalTestCase
                     'opengraph_inherit' => 0,
                     'twitter_inherit' => 1,
                     'robots_inherit' => 1,
+                    'structuredData_inherit' => 1,
                     'sitemap_inherit' => 1,
                     'sitemap_include' => 1,
                 ]
@@ -190,6 +194,7 @@ class FieldtypeSeoMaestroTest extends FunctionalTestCase
                     'opengraph_inherit' => 1,
                     'twitter_inherit' => 0,
                     'robots_inherit' => 1,
+                    'structuredData_inherit' => 1,
                     'sitemap_inherit' => 1,
                     'sitemap_include' => 1,
                 ]
@@ -203,6 +208,21 @@ class FieldtypeSeoMaestroTest extends FunctionalTestCase
                     'opengraph_inherit' => 1,
                     'twitter_inherit' => 1,
                     'robots_inherit' => 0,
+                    'structuredData_inherit' => 1,
+                    'sitemap_inherit' => 1,
+                    'sitemap_include' => 1,
+                ]
+            ],
+            [
+                'structuredData',
+                'breadcrumb',
+                0,
+                [
+                    'meta_inherit' => 1,
+                    'opengraph_inherit' => 1,
+                    'twitter_inherit' => 1,
+                    'robots_inherit' => 1,
+                    'structuredData_inherit' => 0,
                     'sitemap_inherit' => 1,
                     'sitemap_include' => 1,
                 ]
@@ -216,6 +236,7 @@ class FieldtypeSeoMaestroTest extends FunctionalTestCase
                     'opengraph_inherit' => 1,
                     'twitter_inherit' => 1,
                     'robots_inherit' => 1,
+                    'structuredData_inherit' => 1,
                     'sitemap_inherit' => 0,
                     'sitemap_include' => 1,
                 ]
@@ -229,6 +250,7 @@ class FieldtypeSeoMaestroTest extends FunctionalTestCase
                     'opengraph_inherit' => 1,
                     'twitter_inherit' => 1,
                     'robots_inherit' => 1,
+                    'structuredData_inherit' => 1,
                     'sitemap_inherit' => 0,
                     'sitemap_include' => 0,
                 ]

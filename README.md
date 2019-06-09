@@ -8,10 +8,10 @@
 A ProcessWire module helping you to manage SEO related tasks like a boss! 😎✌️
 
 * Automatically generates and maintains a XML sitemap from your pages.
-* Includes a Fieldtype and Inputfield to manage sitemap settings and meta data for pages (title, description, canonical url, Opengraph, Twitter etc.).
+* Includes a Fieldtype and Inputfield to manage sitemap settings and meta data for pages (title, description, canonical url, Opengraph, Twitter, structured data etc.).
 * Multi language support for the sitemap and meta data.
 * Configure default values for meta data on template level and let pages inherit or overwrite them individually.
-* Map existing fields to meta data, reducing the need to duplicate content.
+* Map existing fields to meta data, reducing the need to duplicate content for content editors.
 * Live preview for content editors how the entered meta data appears on Google.
 
 ## Requirements
@@ -44,15 +44,15 @@ The default name reduces the risk to accidentally overwrite an already existing 
 ### Configure Meta Data and Sitemap Settings for Pages
 
 The meta data and the sitemap configuration of each page is managed with the included Fieldtype.
-Go ahead and create a new field of type *Seo Maestro*, a good name for the field is `seo` 😄. 
+Go ahead and create a new field of type *Seo Maestro*, a good name for the field is `seo` 😄.
 
 * Configure default meta data under _Details_. For text based metatags, you may enter strings or placeholders to 
 map existing fields. For example, if your template contains a `lead_text` field which should be used for the 
 `description` meta tag by default, use the placeholder `{lead_text}`. It is also possible to combine strings and placeholders. 
 The following example appends the company name after a page's title: `{title} | acme.com`.
-* The opengraph image tag supports placeholders as well: By referencing an image field holding multiple images, the first
+* The opengraph image tag supports placeholders as well: Simply reference an image field. If the field is holding multiple images, the first
 one is used. For example, `{images}` would pick the first image from the `images` field. 
-* Each page inherits meta tag values and sitemap configuration by default, but may override them individually.
+* Each page inherits meta tag values and sitemap configuration by default, but may override them individually when editing a page.
 * Under the _Input_ tab, configure which meta data is displayed to the content editor when editing pages.
 
 > ℹ️ Edit the field in the context of a template to override any of the default data per template.
@@ -68,8 +68,8 @@ been handled by ProcessWire.
 * It excludes pages not viewable for the guest user.
 
 > ⚠ If your installation has lot of pages and the request takes too long to generate the sitemap, or if you run into
-memory problems, it is better disable automatic generation. Use the `\SeoMaestro\SitemapManager` class to create
-the sitemap on your own.
+memory problems, it is better disable the automatic generation. Use the `\SeoMaestro\SitemapManager` class to create
+the sitemap on your own, e.g. via CLI script.
 
 ## Meta Data
 
@@ -89,9 +89,10 @@ The following meta data is managed for each page via _Seo Maestro_ field. Meta t
 | Group | Tags | Description |
 | --- | --- | --- |
 | `meta` |  `title`<br>`description`<br>`keywords`<br>`canonicalUrl` | Holds the famous `title` and `description` tags that should be optimized for search engines. It is also possible to set a custom canonical URL which by default equals the page's url.
-| `opengraph` |  `title`<br>`description`<br>`image`<br>`imageAlt`<br>`type`<br>`image`<br>`locale`<br>`siteName` | By default, title and description inherit the values from the meta group. If an image is specified, the `og:image:width`, `og:image:height` and `og:image:type` tags are included automatically during rendering. |
-| `twitter` |  `card`<br>`site`<br>`creator` | Twitter reads the Opengraph meta data as well, except for a few specific tags. |
-| `robots` |  `noIndex`<br>`noFollow` | Both tags might be set individually or combined. |
+| `opengraph` |  `title`<br>`description`<br>`image`<br>`imageAlt`<br>`type`<br>`image`<br>`locale`<br>`siteName` | Opengraph meta data is read by facebook and other social networks. By default, title and description inherit the values from the meta group. If an image is specified, the `og:image:width`, `og:image:height` and `og:image:type` tags are included automatically at render time. |
+| `twitter` |  `card`<br>`site`<br>`creator` | Twitter reads the Opengraph meta data as well, except for a few specific tags managed by this group. |
+| `robots` |  `noIndex`<br>`noFollow` | Should robots index a page and follow its links? |
+| `structuredData` |  `breadcrumb` | Whether to render structured data (JSON-LD) for [breadcrumbs](https://developers.google.com/search/docs/data-types/breadcrumb). |
 
 ### Output Meta Tags
 
@@ -238,4 +239,21 @@ $wire->addHookAfter('SeoMaestro::sitemapItems', function (HookEvent $event) use 
     $event->return = array_merge($event->return, [$item]);
 });
 ```
+
+## Running Tests
+
+The module includes [PHPUnit](https://phpunit.de/) based tests cases, located in the `./tests` directory.
+
+* Make sure that the dev dependencies are installed by running `composer install` in `site/modules/SeoMaestro`.
+* The tests will create pages, fields and templates. Everything should get cleaned up properly, but you should *never ever* run them
+on a production environment 😉.
+* Some tests expect a multi language setup to exist. To make them pass, use the multi language site profile provided by
+ProcessWire. Check the [.travis.yml](.travis.yml) file for an automated the setup.  
+
+To run the tests:
+
+```
+cd site/modules/SeoMaestro && vendor/bin/phpunit --bootstrap tests/bootstrap.php tests/src --colors
+```  
+
 

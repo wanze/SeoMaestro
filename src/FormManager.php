@@ -191,4 +191,19 @@ class FormManager extends Wire
 
         return $inputfield;
     }
+
+    private function getInputfieldStructuredData($name, array $options)
+    {
+        switch ($name) {
+            case 'breadcrumb':
+                $inputfield = $this->wire('modules')->get('InputfieldCheckbox');
+                $inputfield->uncheckedValue = 0;
+                $inputfield->label2 = $this->_('Render breadcrumb markup');
+                break;
+            default:
+                $inputfield = $this->wire('modules')->get('InputfieldText');
+        }
+
+        return $inputfield;
+    }
 }

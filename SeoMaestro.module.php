@@ -2,6 +2,7 @@
 
 namespace ProcessWire;
 
+use SeoMaestro\DatabaseMigrations;
 use SeoMaestro\SitemapManager;
 
 /**
@@ -52,6 +53,12 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
         if ($this->sitemapManager->generate($sitemap)) {
             $this->wire('session')->message($this->_('The XML sitemap has been generated.'));
         }
+    }
+
+    public function ___upgrade($fromVersion, $toVersion)
+    {
+        $databaseMigrations = $this->wire(new DatabaseMigrations());
+        $databaseMigrations->run();
     }
 
     /**

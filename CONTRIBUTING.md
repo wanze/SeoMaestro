@@ -8,9 +8,10 @@ community.
 
 ## Pull Requests
 
-Pull requests are welcome! If you you add a feature, please discuss it first in a new issue or in the forums.
+Pull requests are welcome! ❤ If you add a feature, please discuss it first in a new issue or in the forums.
 
 * Open the pull request against the `master` branch.
-* Please try to add test cases for newly introduced features or bug fixes.
+* Please try to add test cases for newly introduced features or bug fixes. See the [Running Tests](README.md#running-tests)
+chapter in the readme.
 * Make sure tests are still green ✅.
 * The module follows the [PSR-2](https://www.php-fig.org/psr/psr-2/) coding style and checks it with [styleci.io](https://styleci.io/).

@@ -67,6 +67,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
             'opengraph_inherit' => $this->doesGroupInheritData('opengraph', $value) ? 1 : 0,
             'twitter_inherit' => $this->doesGroupInheritData('twitter', $value) ? 1 : 0,
             'robots_inherit' => $this->doesGroupInheritData('robots', $value) ? 1 : 0,
+            'structuredData_inherit' => $this->doesGroupInheritData('structuredData', $value) ? 1 : 0,
             'sitemap_inherit' => $this->doesGroupInheritData('sitemap', $value) ? 1 : 0,
             'sitemap_include' => $value->get('sitemap')->include ? 1 : 0,
         ];
@@ -93,12 +94,13 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
         $schema['data'] = 'text NOT NULL';
 
         // Add flags to quickly lookup information with selectors.
-        // The "inherit" flags are true, if all data of a group is inherited by a page.
+        // The "inherit" flags are true, if a page inherits all data of a group from the SeoMaestro field.
         $schema['meta_inherit'] = 'tinyint UNSIGNED NOT NULL';
         $schema['opengraph_inherit'] = 'tinyint UNSIGNED NOT NULL';
         $schema['twitter_inherit'] = 'tinyint UNSIGNED NOT NULL';
         $schema['robots_inherit'] = 'tinyint UNSIGNED NOT NULL';
         $schema['sitemap_inherit'] = 'tinyint UNSIGNED NOT NULL';
+        $schema['structuredData_inherit'] = 'tinyint UNSIGNED NOT NULL';
 
         // Is the page included in the sitemap?
         $schema['sitemap_include'] = 'tinyint UNSIGNED NOT NULL';
@@ -107,6 +109,13 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
         unset($schema['keys']['data']);
 
         return $schema;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function ___getCompatibleFieldtypes(Field $field) {
+        return null;
     }
 
     /**
@@ -183,6 +192,11 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
             'robots_noFollow' => [
                 'label' => $this->_('Prevent search engines from following links on this page'),
             ],
+            'structuredData_breadcrumb' => [
+                'label' => $this->_('Breadcrumb'),
+                'description' => $this->_('Google Search uses breadcrumb markup to categorize the information from the page in search results.'),
+                'notes' => $this->_('See: https://developers.google.com/search/docs/data-types/breadcrumb'),
+            ],
             'sitemap_include' => [
                 'label' => $this->_('Include in Sitemap'),
             ],
@@ -239,6 +253,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
             'sitemap_include' => 1,
             'sitemap_priority' => '0.5',
             'sitemap_changeFrequency' => 'monthly',
+            'structuredData_breadcrumb' => 1,
         ];
     }
 
@@ -252,7 +267,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
         $info = $this->wire('modules')->get('InputfieldMarkup');
         $info->label = $this->_('Info');
         $info->attr('value',
-            "Set default values for your meta tags and the sitemap behaviour. Each page inherits these values by default, but may override them individually.\n For text based metatags, enter a string or a placeholder in the form of `{title}` to map a page field value.\n\n*Note:* Any of the default values might be overridden per template by editing this field in the context of a template.");
+            "Set default values for your meta data and the sitemap behaviour. Each page inherits these values by default, but may override them individually.\n For text based metatags, enter a string or a placeholder in the form of `{title}` to map a page field value.\n\n*Note:* Any of the default values might be overridden per template by editing this field in the context of a template.");
         $info->textformatters = ['TextformatterMarkdownExtra'];
         $wrapper->append($info);
 
@@ -308,11 +323,12 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
         $height->columnWidth = 25;
         $form->insertAfter($height, $width);
 
+        // Meta title format.
         $metaTitle = $form->get('meta_title');
         $metaTitleFormat = $this->wire('modules')->get('InputfieldText');
         $metaTitleFormat->attr('name', 'meta_title_format');
         $metaTitleFormat->label = $this->_('Title Format');
-        $metaTitleFormat->description = $this->_('Optionally decorate the rendered title with additional information. A common pattern is to include the site name or domain. Use the `{meta_title}` placeholder to substitute the rendered title, for example `{meta_title} | acme.com`.');
+        $metaTitleFormat->description = $this->_('Optionally append additional information to the rendered title. A common pattern is to include the site name or domain. Use the `{meta_title}` placeholder to substitute the rendered title, for example `{meta_title} | acme.com`.');
         $metaTitleFormat->useLanguages = true;
         $form->insertAfter($metaTitleFormat, $metaTitle);
     }
