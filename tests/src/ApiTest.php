@@ -35,27 +35,6 @@ class ApiTest extends FunctionalTestCase
         $this->template->save();
     }
 
-    public function test_default_values()
-    {
-        $page = $this->createPage($this->template, '/');
-        $page->set('title', 'Seo Maestro');
-        $page->set('name', 'seo-maestro');
-        $page->save();
-
-        $this->assertEquals('Seo Maestro', $page->get(self::FIELD_NAME)->meta->title);
-        $this->assertEquals('http://localhost/en/seo-maestro/', $page->get(self::FIELD_NAME)->meta->canonicalUrl);
-        $this->assertEquals('Seo Maestro', $page->get(self::FIELD_NAME)->opengraph->title);
-        $this->assertEquals('Seo Maestro', $page->get(self::FIELD_NAME)->og->title);
-        $this->assertEquals('website', $page->get(self::FIELD_NAME)->opengraph->type);
-        $this->assertEquals('summary', $page->get(self::FIELD_NAME)->twitter->card);
-        $this->assertEquals(0, $page->get(self::FIELD_NAME)->robots->noIndex);
-        $this->assertEquals(0, $page->get(self::FIELD_NAME)->robots->noFollow);
-        $this->assertEquals(1, $page->get(self::FIELD_NAME)->sitemap->include);
-        $this->assertEquals(0.5, $page->get(self::FIELD_NAME)->sitemap->priority);
-        $this->assertEquals('monthly', $page->get(self::FIELD_NAME)->sitemap->changeFrequency);
-        $this->assertInstanceOf(BreadcrumbStructuredData::class, $page->get(self::FIELD_NAME)->structuredData->breadcrumb);
-    }
-
     /**
      * @test
      */
@@ -68,6 +47,7 @@ class ApiTest extends FunctionalTestCase
         $page->get(self::FIELD_NAME)->twitter->site = '@schtifu';
         $page->get(self::FIELD_NAME)->robots->noIndex = 1;
         $page->get(self::FIELD_NAME)->sitemap->include = 0;
+        $page->get(self::FIELD_NAME)->structuredData->breadcrumb = false;
 
         $page->save();
 
@@ -80,6 +60,7 @@ class ApiTest extends FunctionalTestCase
         $this->assertEquals('@schtifu', $page->get(self::FIELD_NAME)->twitter->site);
         $this->assertEquals(1, $page->get(self::FIELD_NAME)->robots->noIndex);
         $this->assertEquals(0, $page->get(self::FIELD_NAME)->sitemap->include);
+        $this->assertEquals(null, $page->get(self::FIELD_NAME)->structuredData->breadcrumb);
     }
 
     /**
@@ -172,167 +153,6 @@ class ApiTest extends FunctionalTestCase
         $this->assertEquals('Seo Maestro | acme.com', $page->get(self::FIELD_NAME)->meta->title);
     }
 
-    /**
-     * @test
-     */
-    public function it_should_output_the_correct_opengraph_image_url()
-    {
-        $this->addImageFieldToTemplate('imagesTest');
-
-        $page = $this->createPage($this->template, '/');
-        $page->get('imagesTest')->add(dirname(__DIR__) . '/fixtures/schynige-platte.jpg');
-        $page->get(self::FIELD_NAME)->opengraph->image = '{imagesTest}';
-        $page->save();
-
-        $this->assertEquals($page->get('imagesTest')->first()->httpUrl, $page->get(self::FIELD_NAME)->opengraph->image);
-
-        $page->get(self::FIELD_NAME)->opengraph->image = 'https://seomaestro.ch/some-other-image.jpg';
-        $page->save();
-
-        $this->assertEquals('https://seomaestro.ch/some-other-image.jpg', $page->get(self::FIELD_NAME)->opengraph->image);
-    }
-
-    public function test_custom_canonical_url()
-    {
-        $page = $this->createPage($this->template, '/');
-        $page->title = 'Seo Maestro';
-        $page->get(self::FIELD_NAME)->meta->canonicalUrl = 'http://localhost/en/custom/';
-        $page->save();
-
-        $expected = "<title>Seo Maestro</title>\n<link rel=\"canonical\" href=\"http://localhost/en/custom/\">";
-        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
-
-        // Relative URL's should use the base url from the module config.
-        $page->get(self::FIELD_NAME)->meta->canonicalUrl = '/en/custom/';
-        $this->wire('modules')->get('SeoMaestro')->set('baseUrl', 'https://mydomain.com');
-
-        $expected = "<title>Seo Maestro</title>\n<link rel=\"canonical\" href=\"https://mydomain.com/en/custom/\">";
-        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
-
-        $this->wire('modules')->get('SeoMaestro')->set('baseUrl', '');
-    }
-
-    public function test_render_meta()
-    {
-        $page = $this->createPage($this->template, '/');
-        $page->title = 'Seo Maestro';
-        $page->get(self::FIELD_NAME)->meta->description = "This <a href='/foo'>string</a> <b>should</b><br> be sanitized and encode'd correctly\n";
-        $page->save();
-
-        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"This string should be sanitized and encode&#039;d correctly\">\n<link rel=\"canonical\" href=\"http://localhost/en/untitled-page/\">";
-        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
-
-        $page->get(self::FIELD_NAME)->meta->keywords = 'Seo Maestro, ProcessWire, Module';
-
-        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"This string should be sanitized and encode&#039;d correctly\">\n<meta name=\"keywords\" content=\"Seo Maestro, ProcessWire, Module\">\n<link rel=\"canonical\" href=\"http://localhost/en/untitled-page/\">";
-
-        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
-    }
-
-    public function test_render_meta_title_with_custom_format()
-    {
-        $page = $this->createPage($this->template, '/');
-        $page->title = 'Seo Maestro';
-        $page->save();
-
-        $this->field->set('meta_title_format', '{meta_title} | acme.com');
-        $this->field->save();
-
-        $this->assertEquals('Seo Maestro | acme.com', $page->get(self::FIELD_NAME)->meta->title);
-    }
-
-    public function test_render_opengraph()
-    {
-        $this->addImageFieldToTemplate('imageOg');
-
-        $page = $this->createPage($this->template, '/');
-        $page->title = 'Seo Maestro';
-        $page->get('imageOg')->add(dirname(__DIR__) . '/fixtures/schynige-platte.jpg');
-        $page->get(self::FIELD_NAME)->opengraph->image = '{imageOg}';
-        $page->save();
-
-        $expected = sprintf("<meta property=\"og:title\" content=\"Seo Maestro\">\n<meta property=\"og:image\" content=\"http://localhost/site/assets/files/%s/schynige-platte.jpg\">\n<meta property=\"og:image:type\" content=\"image/jpeg\">\n<meta property=\"og:image:width\" content=\"1024\">\n<meta property=\"og:image:height\" content=\"768\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"%s\">", $page->id, $page->httpUrl);
-        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->opengraph->render());
-    }
-
-    public function test_render_opengraph_fallback_to_default_image()
-    {
-        $field = $this->addImageFieldToTemplate('imageOg');
-
-        $defaultPage = $this->createPage($this->template, '/', 'defaultPage');
-        $defaultPage->title = 'Default Page holding the fallback image';
-        $defaultPage->get('imageOg')->add(dirname(__DIR__) . '/fixtures/schynige-platte.jpg');
-        $defaultPage->save();
-
-        $field->set('defaultValuePage', $defaultPage->id);
-        $field->save();
-
-        $page = $this->createPage($this->template, '/');
-        $page->title = 'Seo Maestro';
-        $page->get(self::FIELD_NAME)->opengraph->image = '{imageOg}';
-        $page->save();
-
-        $expected = sprintf("<meta property=\"og:title\" content=\"Seo Maestro\">\n<meta property=\"og:image\" content=\"http://localhost/site/assets/files/%s/schynige-platte.jpg\">\n<meta property=\"og:image:type\" content=\"image/jpeg\">\n<meta property=\"og:image:width\" content=\"1024\">\n<meta property=\"og:image:height\" content=\"768\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"%s\">", $defaultPage->id, $page->httpUrl);
-        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->opengraph->render());
-    }
-
-    /**
-     * @dataProvider opengraphImageSizesDataProvider
-     */
-    public function test_render_opengraph_resize($width, $height, $expectedVariation)
-    {
-        $this->addImageFieldToTemplate('imageOg');
-
-        $page = $this->createPage($this->template, '/');
-        $page->title = 'Seo Maestro';
-        $page->get('imageOg')->add(dirname(__DIR__) . '/fixtures/schynige-platte.jpg');
-        $page->get(self::FIELD_NAME)->opengraph->image = '{imageOg}';
-        $page->save();
-
-        // Restrict opengraph image size on field setting level.
-        $field = $this->wire('fields')->get(self::FIELD_NAME);
-        $field->set('opengraph_image_width', $width);
-        $field->set('opengraph_image_height', $height);
-        $field->save();
-
-        $expected = sprintf("<meta property=\"og:title\" content=\"Seo Maestro\">\n<meta property=\"og:image\" content=\"http://localhost/site/assets/files/%s/schynige-platte.%s.jpg\">\n<meta property=\"og:image:type\" content=\"image/jpeg\">\n<meta property=\"og:image:width\" content=\"800\">\n<meta property=\"og:image:height\" content=\"600\">\n<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:url\" content=\"%s\">", $page->id, $expectedVariation, $page->httpUrl);
-        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->opengraph->render());
-    }
-
-    public function opengraphImageSizesDataProvider()
-    {
-        return [
-            [800, 600, '800x600'],
-            [800, null, '800x0'],
-            [null, 600, '0x600'],
-        ];
-    }
-
-    public function test_render_twitter()
-    {
-        $page = $this->createPage($this->template, '/');
-        $page->get(self::FIELD_NAME)->twitter->site = '@schtifu';
-        $page->get(self::FIELD_NAME)->twitter->creator = '@schtifu';
-
-        $expected = "<meta name=\"twitter:card\" content=\"summary\">\n<meta name=\"twitter:site\" content=\"@schtifu\">\n<meta name=\"twitter:creator\" content=\"@schtifu\">";
-        $this->assertEquals($expected, $page->get(self::FIELD_NAME)->twitter->render());
-    }
-
-    public function test_render_robots()
-    {
-        $page = $this->createPage($this->template, '/');
-        $page->get(self::FIELD_NAME)->twitter->site = '@schtifu';
-        $page->get(self::FIELD_NAME)->twitter->creator = '@schtifu';
-
-        $this->assertEquals('', $page->get(self::FIELD_NAME)->robots->render());
-
-        $page->get(self::FIELD_NAME)->robots->noIndex = 1;
-        $this->assertEquals('<meta name="robots" content="noindex">', $page->get(self::FIELD_NAME)->robots->render());
-
-        $page->get(self::FIELD_NAME)->robots->noFollow = 1;
-        $this->assertEquals('<meta name="robots" content="noindex, nofollow">', $page->get(self::FIELD_NAME)->robots->render());
-    }
-
     public function test_render_multi_language()
     {
         $page = $this->createPage($this->template, '/', 'test-render-multi-language');
@@ -359,41 +179,6 @@ class ApiTest extends FunctionalTestCase
         $page->save();
 
         $this->assertEquals('Seo &amp; Maestro', $page->get(self::FIELD_NAME)->meta->title);
-    }
-
-    public function test_structured_data_breadcrumb()
-    {
-        $parent = $this->createPage($this->template, '/', 'parent');
-        $parent->title = 'Parent';
-        $parent->save();
-
-        $child = $this->createPage($this->template, $parent, 'child');
-        $child->title = 'Child';
-        $child->save();
-
-        $expected = '<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-  {
-    "@type": "ListItem",
-    "position": 1,
-    "name": "Parent",
-    "item": "http://localhost/en/parent/"
-  },
-  {
-    "@type": "ListItem",
-    "position": 2,
-    "name": "Child",
-    "item": "http://localhost/en/parent/child/"
-  }
-  ]
-}
-</script>';
-
-        $this->assertInstanceOf(BreadcrumbStructuredData::class, $child->get(self::FIELD_NAME)->structuredData->breadcrumb);
-        $this->assertEquals($expected, $child->get(self::FIELD_NAME)->structuredData->breadcrumb->render());
     }
 
     public function test_render_all_metatags()
@@ -449,14 +234,5 @@ class ApiTest extends FunctionalTestCase
         $this->wire('fields')->saveFieldgroupContext($field, $this->template->fieldgroup);
 
         $this->assertEquals('Seo Maestro in the context of a template', $page->get(self::FIELD_NAME)->meta->title);
-    }
-
-    private function addImageFieldToTemplate($name)
-    {
-        $images = $this->createField('FieldtypeImage', $name);
-        $this->template->fieldgroup->add($images);
-        $this->template->save();
-
-        return $images;
     }
 }

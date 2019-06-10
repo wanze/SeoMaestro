@@ -248,7 +248,7 @@ The module includes [PHPUnit](https://phpunit.de/) based tests cases, located in
 * The tests will create pages, fields and templates. Everything should get cleaned up properly, but you should *never ever* run them
 on a production environment 😉.
 * Some tests expect a multi language setup to exist. To make them pass, use the multi language site profile provided by
-ProcessWire. Check the [.travis.yml](.travis.yml) file for an automated the setup.  
+ProcessWire. Check the [.travis.yml](.travis.yml) file for an automated setup.  
 
 To run the tests:
 

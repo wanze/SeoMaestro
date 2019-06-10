@@ -114,7 +114,8 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
     /**
      * {@inheritdoc}
      */
-    public function ___getCompatibleFieldtypes(Field $field) {
+    public function ___getCompatibleFieldtypes(Field $field)
+    {
         return null;
     }
 
