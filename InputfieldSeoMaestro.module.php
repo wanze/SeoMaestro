@@ -3,6 +3,7 @@
 namespace ProcessWire;
 
 use SeoMaestro\FormManager;
+use SeoMaestro\InputfieldFacebookSharePreview;
 use SeoMaestro\InputfieldGooglePreview;
 use SeoMaestro\InputfieldMetaData;
 
@@ -119,6 +120,9 @@ class InputfieldSeoMaestro extends Inputfield
                 // Insert google preview.
                 if ($inputfield->attr('name') === 'meta_title') {
                     $preview = new InputfieldGooglePreview($pageValue);
+                    $fieldset->append($preview);
+                } elseif ($inputfield->attr('name') === 'opengraph_title') {
+                    $preview = new InputfieldFacebookSharePreview($pageValue);
                     $fieldset->append($preview);
                 }
                 $field = new InputfieldMetaData($inputfield->attr('name'), $pageValue, $inputfield);

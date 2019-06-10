@@ -76,4 +76,18 @@ class StructuredDataTest extends FunctionalTestCase
         $this->assertInstanceOf(BreadcrumbStructuredData::class, $child->get(self::FIELD_NAME)->structuredData->breadcrumb);
         $this->assertEquals($expected, $child->get(self::FIELD_NAME)->structuredData->breadcrumb->render());
     }
+
+    /**
+     * @test
+     */
+    public function it_should_not_render_breadcrumbs_if_disabled()
+    {
+        $page = $this->createPage($this->template, '/', 'page');
+        $page->title = 'Page';
+        $page->get(self::FIELD_NAME)->structuredData->breadcrumb = false;
+        $page->save();
+
+        $this->assertEquals(null, $page->get(self::FIELD_NAME)->structuredData->breadcrumb);
+        $this->assertEquals('', $page->get(self::FIELD_NAME)->structuredData->render());
+    }
 }

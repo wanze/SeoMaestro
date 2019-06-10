@@ -4,6 +4,7 @@
 
 ### Added
 
+* Add facebook share preview for content editors when editing Opengraph meta data
 * Add support to extend the rendered meta title with additional information such as the domain or site name ([#11](https://github.com/wanze/SeoMaestro/issues/11))
 * Render structured data (JSON-LD) for [breadcrumbs](https://developers.google.com/search/docs/data-types/breadcrumb) via new group `structuredData` ([#10](https://github.com/wanze/SeoMaestro/issues/10))
 * Add new meta group `structuredData` which will handle more types of [structured data](https://developers.google.com/search/docs/data-types/article) in the future 🤓 

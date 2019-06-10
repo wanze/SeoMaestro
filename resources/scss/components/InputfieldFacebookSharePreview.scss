@@ -1,0 +1,40 @@
+.seomaestro-facebookpreview {
+    > .InputfieldContent > .preview {
+        font-family: helvetica, arial, sans-serif;
+        max-width: 527px;
+        border: 1px solid #dadde1;
+
+        > .image {
+            height: 277px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        > .content {
+            background: #f2f3f5;
+            border-top: 1px solid #DaDDe1;
+            padding: 10px;
+
+            > .url {
+                text-transform: uppercase;
+                color: #606771;
+                font-size: 13px;
+            }
+
+            > .title {
+                color: #1d2028;
+                font-size: 16px;
+                font-weight: bold;
+                line-height: 1.8;
+            }
+
+            .desc {
+                color: #606771;
+                font-size: 14px;
+                line-height: 1.4;
+                word-wrap: break-word;
+            }
+        }
+    }
+}

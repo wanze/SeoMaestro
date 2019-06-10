@@ -30,7 +30,6 @@ class InputfieldGooglePreview extends InputfieldMarkup
         $this->wrapAttr('data-seomaestro-googlepreview', $field->name);
         $this->wrapAttr('data-seomaestro-title-format', $field->get('meta_title_format'));
         $this->label = $this->_('Google Preview');
-        $this->skipLabel = Inputfield::skipLabelHeader;
     }
 
     public function ___render()
