@@ -52,6 +52,10 @@ class StructuredDataTest extends FunctionalTestCase
         $child->title = 'Child';
         $child->save();
 
+        $grandChild = $this->createPage($this->template, $child, 'grand-child');
+        $grandChild->title = 'Grand Child';
+        $grandChild->save();
+
         $expected = '<script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -68,13 +72,19 @@ class StructuredDataTest extends FunctionalTestCase
     "position": 2,
     "name": "Child",
     "item": "http://localhost/en/parent/child/"
+  },
+  {
+    "@type": "ListItem",
+    "position": 3,
+    "name": "Grand Child",
+    "item": "http://localhost/en/parent/child/grand-child/"
   }
   ]
 }
 </script>';
 
-        $this->assertInstanceOf(BreadcrumbStructuredData::class, $child->get(self::FIELD_NAME)->structuredData->breadcrumb);
-        $this->assertEquals($expected, $child->get(self::FIELD_NAME)->structuredData->breadcrumb->render());
+        $this->assertInstanceOf(BreadcrumbStructuredData::class, $grandChild->get(self::FIELD_NAME)->structuredData->breadcrumb);
+        $this->assertEquals($expected, $grandChild->get(self::FIELD_NAME)->structuredData->breadcrumb->render());
     }
 
     /**
