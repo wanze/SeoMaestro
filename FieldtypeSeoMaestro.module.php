@@ -132,7 +132,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
             ],
             'meta_description' => [
                 'label' => $this->_('Description'),
-                'description' => $this->_('Every page should have a unique Meta Description, ideally less than 320 characters long.'),
+                'description' => $this->_('Every page should have a unique Meta Description, ideally less than 160 characters long.'),
                 'translatable' => true,
             ],
             'meta_keywords' => [

@@ -53,7 +53,7 @@ class InputfieldMetaData extends InputfieldFieldset
         $this->inputfield->addClass('seomaestro-inputfield-embed', 'wrapClass');
 
         $inherit = $this->wire('modules')->get('InputfieldCheckbox');
-        $inherit->label2 = $this->_('Inherit');
+        $inherit->label2 = $this->_('Inherit default value');
         $inherit->attr('name', $this->inputfield->attr('name') . '_inherit');
         $inherit->attr('checked', $this->inputfield->attr('value') === 'inherit');
         $inherit->columnWidth = 10;
