@@ -8,11 +8,52 @@
 A ProcessWire module helping you to manage SEO related tasks like a boss! 😎✌️
 
 * Automatically generates and maintains a XML sitemap from your pages.
-* Includes a Fieldtype and Inputfield to manage sitemap settings and meta data for pages (title, description, canonical url, Opengraph, Twitter, structured data etc.).
+* Includes a Fieldtype and Inputfield to manage sitemap settings (`noindex`, `nofollow`) and meta data for pages (title, description, canonical url, Opengraph, Twitter, structured data etc.).
 * Multi language support for the sitemap and meta data.
 * Configure default values for meta data on template level and let pages inherit or overwrite them individually.
 * Map existing fields to meta data, reducing the need to duplicate content for content editors.
-* Live preview for content editors how the entered meta data appears on Google.
+* Live preview for content editors how the entered meta data appears on Google and Facebook.
+
+Here is an example of rendered meta data you will get from a single SeoMaestro field:
+
+```html
+<title>Sed dictum eros quis massa semper rutrum. | acme.com</title>
+<meta name="description" content="Si lobortis singularis genitus ibidem saluto. Dolore ad nunc, mos accumsan paratus duis suscipit luptatum facilisis macto uxor iaceo quadrum. Demoveo, appellatio elit neque ad commodo ea. Wisi, iaceo, tincidunt at commoveo rusticus et, ludus.">
+<meta name="keywords" content="Foo,Bar">
+<link rel="canonical" href="https://acme.com/en/about/">
+<meta property="og:title" content="Sed dictum eros quis massa semper rutrum.">
+<meta property="og:description" content="Si lobortis singularis genitus ibidem saluto. Dolore ad nunc, mos accumsan paratus duis suscipit luptatum facilisis macto uxor iaceo quadrum. Demoveo, appellatio elit neque ad commodo ea. Wisi, iaceo, tincidunt at commoveo rusticus et, ludus.">
+<meta property="og:image" content="https://acme.com/site/assets/files/1001/og-image.jpg">
+<meta property="og:image:type" content="image/jpg">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="1200">
+<meta property="og:image:alt" content="Lorem Ipsum">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://acme.com/en/about/">
+<meta property="og:locale" content="en_EN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@schtifu">
+<meta name="twitter:site" content="@schtifu">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+  {
+    "@type": "ListItem",
+    "position": 1,
+    "name": "About",
+    "item": "https://acme.com/en/about/"
+  }
+  ]
+}
+</script>
+<meta name="generator" content="ProcessWire">
+<link rel="alternate" href="https://acme.com/en/about/" hreflang="en">
+<link rel="alternate" href="https://acme.com/en/about/" hreflang="x-default">
+<link rel="alternate" href="https://acme.com/de/ueber/" hreflang="de">
+<link rel="alternate" href="https://acme.com/fi/tietoja/" hreflang="fi">
+```
 
 ## Requirements
 
@@ -31,8 +72,9 @@ composer require wanze/seo-maestro
 
 The _Seo Maestro_ module offers the following configuration:
 
-* **`Enable sitemap generation`** Automatically generates and maintains a sitemap file.
-* **`Sitemap path`** Path and filename of the sitemap relative from the ProcessWire root directory.
+* **`Enable sitemap generation`** Automatically generates and maintains a XML sitemap file.
+* **`Sitemap path`** Path and filename of the sitemap relative from the ProcessWire root directory. Make sure that
+you have write permission to the given folder, as the module needs to write an XML file.
 * **`Cache time`** A time in minutes how long the sitemap should be cached.
 * **`Base url`** The base url used for all page links in the sitemap and URL metatags, e.g. `https://yourdomain.com`. If empty, the current domain is used.
 * **`Default language`** 2-letter language code of the default language, needed to ensure a correct sitemap for
@@ -66,6 +108,9 @@ been handled by ProcessWire.
 * It only includes pages of templates having a _Seo Maestro_ field, in order to read the sitemap settings.
 * It includes hidden pages.
 * It excludes pages not viewable for the guest user.
+
+Do not forget to [submit the sitemap to Google](https://support.google.com/webmasters/answer/183668?hl=en),
+either in the Search Console or by specifying the path in a `robots.txt` file. 
 
 > ⚠ If your installation has lot of pages and the request takes too long to generate the sitemap, or if you run into
 memory problems, it is better disable the automatic generation. Use the `\SeoMaestro\SitemapManager` class to create
