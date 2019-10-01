@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+* Make the meta title format multi language aware ([#13](https://github.com/wanze/SeoMaestro/issues/13))
+
 ## [0.8.0] - 2019-06-15
 
 ### Added

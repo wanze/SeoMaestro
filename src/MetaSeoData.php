@@ -29,8 +29,9 @@ class MetaSeoData extends SeoDataBase
 
         if ($name === 'title') {
             $field = $this->getFieldInCurrentContext();
-            if ($field->get('meta_title_format')) {
-                $value = str_replace('{meta_title}', $value, $field->get('meta_title_format'));
+            $metaTitleFormat = $field->get('meta_title_format' . $this->getCurrentLanguageId()) ?: $field->get('meta_title_format');
+            if ($metaTitleFormat) {
+                $value = str_replace('{meta_title}', $value, $metaTitleFormat);
             }
         }
 
