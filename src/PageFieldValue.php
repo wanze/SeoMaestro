@@ -99,6 +99,11 @@ class PageFieldValue extends WireData
 
         $tags += $this->seoMaestro->renderMetatags($this->getCommonMetatags());
 
+        $webmasterToolsTags = $this->getWebmasterToolsMetatags();
+        if (count($webmasterToolsTags)) {
+            $tags += $this->seoMaestro->renderMetatags($webmasterToolsTags);
+        }
+
         $tags = array_filter($tags, function ($tag) {
             return $tag !== '';
         });
@@ -163,6 +168,32 @@ class PageFieldValue extends WireData
         return $tags;
     }
 
+    /**
+     * Return the meta tags from the webmaster tools section.
+     *
+     * @return array
+     */
+    private function getWebmasterToolsMetatags()
+    {
+        $tags = [];
+        $field = $this->getFieldInCurrentContext();
+
+        if ($field->get('webmaster_tools_google_code')) {
+            $tags['webmaster_tools_google_code'] = sprintf(
+                '<meta name="google-site-verification" content="%s">',
+                $this->wire('sanitizer')->entities($field->get('webmaster_tools_google_code'))
+            );
+        }
+
+        if ($field->get('webmaster_tools_bing_code')) {
+            $tags['webmaster_tools_bing_code'] = sprintf(
+                '<meta name="msvalidate.01" content="%s">',
+                $this->wire('sanitizer')->entities($field->get('webmaster_tools_bing_code')));
+        }
+
+        return $tags;
+    }
+
     private function isSeoGroup($name)
     {
         return in_array($name, $this->field->type->getSeoGroups());
@@ -212,5 +243,18 @@ class PageFieldValue extends WireData
         }
 
         $this->data = array_merge($defaults, $data);
+    }
+
+    /**
+     * Get the field in the context of the page's template.
+     *
+     * @return \ProcessWire\Field
+     */
+    private function getFieldInCurrentContext()
+    {
+        return $this->page
+            ->get('template')
+            ->get('fieldgroup')
+            ->getField($this->field, true);
     }
 }

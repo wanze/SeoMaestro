@@ -187,10 +187,15 @@ class ApiTest extends FunctionalTestCase
         $page->title = 'A Page';
 
         $de = $this->wire('languages')->get('de');
-        // Make it active in DE but not in FI.
+        // Make it active in DE but not in FI to test that we do not render alternates for inactive languages.
         $page->set("status{$de->id}", 1);
         $page->set("name{$de->id}", 'a-page-de');
         $page->save();
+
+        // Add verification codes on field level.
+        $this->field->set('webmaster_tools_google_code', 'google-123');
+        $this->field->set('webmaster_tools_bing_code', 'bing-123');
+        $this->field->save();
 
         $expected = '<title>A Page</title>
 <link rel="canonical" href="http://localhost/en/a-page-en/">
@@ -215,7 +220,9 @@ class ApiTest extends FunctionalTestCase
 <meta name="generator" content="ProcessWire">
 <link rel="alternate" href="http://localhost/en/a-page-en/" hreflang="en">
 <link rel="alternate" href="http://localhost/en/a-page-en/" hreflang="x-default">
-<link rel="alternate" href="http://localhost/de/a-page-de/" hreflang="de">';
+<link rel="alternate" href="http://localhost/de/a-page-de/" hreflang="de">
+<meta name="google-site-verification" content="google-123">
+<meta name="msvalidate.01" content="bing-123">';
 
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->render());
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->__toString());

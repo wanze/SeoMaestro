@@ -8,13 +8,13 @@
 A ProcessWire module helping you to manage SEO related tasks like a boss! 😎✌️
 
 * Automatically generates and maintains a XML sitemap from your pages.
-* Includes a Fieldtype and Inputfield to manage sitemap settings (`noindex`, `nofollow`) and meta data for pages (title, description, canonical url, Opengraph, Twitter, structured data etc.).
+* Includes a Fieldtype and Inputfield to manage sitemap settings and meta data for pages (title, description, canonical url, Opengraph, Twitter, structured data, robots etc.).
 * Multi language support for the sitemap and meta data.
 * Configure default values for meta data on template level and let pages inherit or overwrite them individually.
 * Map existing fields to meta data, reducing the need to duplicate content for content editors.
 * Live preview for content editors how the entered meta data appears on Google and Facebook.
 
-Here is an example of rendered meta data you will get from a single SeoMaestro field:
+Here is an example of all rendered meta data you will get from a SeoMaestro field:
 
 ```html
 <title>Sed dictum eros quis massa semper rutrum. | acme.com</title>
@@ -53,6 +53,8 @@ Here is an example of rendered meta data you will get from a single SeoMaestro f
 <link rel="alternate" href="https://acme.com/en/about/" hreflang="x-default">
 <link rel="alternate" href="https://acme.com/de/ueber/" hreflang="de">
 <link rel="alternate" href="https://acme.com/fi/tietoja/" hreflang="fi">
+<meta name="google-site-verification" content="google-1234">
+<meta name="msvalidate.01" content="bing-1234">
 ```
 
 ## Requirements
@@ -88,14 +90,16 @@ The default name reduces the risk to accidentally overwrite an already existing 
 The meta data and the sitemap configuration of each page is managed with the included Fieldtype.
 Go ahead and create a new field of type *Seo Maestro*, a good name for the field is `seo` 😄.
 
-* Configure default meta data under _Details_. For text based metatags, you may enter strings or placeholders to 
+* Configure default meta data under _Details > Default Values_. For text based metatags, you may enter strings or placeholders to 
 map existing fields. For example, if your template contains a `lead_text` field which should be used for the 
 `description` meta tag by default, use the placeholder `{lead_text}`. It is also possible to combine strings and placeholders. 
 The following example appends the company name after a page's title: `{title} | acme.com`.
 * The opengraph image tag supports placeholders as well: Simply reference an image field. If the field is holding multiple images, the first
 one is used. For example, `{images}` would pick the first image from the `images` field. 
 * Each page inherits meta tag values and sitemap configuration by default, but may override them individually when editing a page.
-* Under the _Input_ tab, configure which meta data is displayed to the content editor when editing pages.
+* Under the _Input_ tab, configure which meta data is displayed to the content editor when editing pages. Exclude any meta data you do not need
+or which should not be changed by content editors. You can also exclude meta groups, e.g. exclude the _Opengraph_ section entirely.
+* The _Webmaster Tools_ section allows you to enter Google and Bing verification codes, which are rendered as meta tags. 
 
 > ℹ️ Edit the field in the context of a template to override any of the default data per template.
 
@@ -138,6 +142,15 @@ The following meta data is managed for each page via _Seo Maestro_ field. Meta t
 | `twitter` |  `card`<br>`site`<br>`creator` | Twitter reads the Opengraph meta data as well, except for a few specific tags managed by this group. |
 | `robots` |  `noIndex`<br>`noFollow` | Should robots index a page and follow its links? |
 | `structuredData` |  `breadcrumb` | Whether to render structured data (JSON-LD) for [breadcrumbs](https://developers.google.com/search/docs/data-types/breadcrumb). |
+
+### Webmaster Tools
+
+If you add the Google and Bing verification codes in the _Webmaster Tools_ section when editing a field, the following meta tags are rendered additionally:
+
+| Tag | Description |
+| --- | --- |
+| `<meta name="google-site-verification">` | Contains the Google verification code. |
+| `<meta name="msvalidate.01">` | Contains the Bing verification code. |
 
 ### Output Meta Tags
 

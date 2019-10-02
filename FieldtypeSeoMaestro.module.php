@@ -265,23 +265,47 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
     {
         $wrapper = parent::___getConfigInputfields($field);
 
-        $info = $this->wire('modules')->get('InputfieldMarkup');
-        $info->label = $this->_('Info');
-        $info->attr('value',
-            "Set default values for your meta data and the sitemap behaviour. Each page inherits these values by default, but may override them individually.\n For text based metatags, enter a string or a placeholder in the form of `{title}` to map a page field value.\n\n*Note:* Any of the default values might be overridden per template by editing this field in the context of a template.");
-        $info->textformatters = ['TextformatterMarkdownExtra'];
-        $wrapper->append($info);
+        // Add a fieldset to configure the default meta data and sitemap settings.
+        $defaultValues = $this->wire('modules')->get('InputfieldFieldset');
+        $defaultValues->label = $this->_('Default Values');
+        $defaultValues->collapsed = Inputfield::collapsedYes;
+        $defaultValues->attr('name', 'default_values');
+        $defaultValues->description = $this->_('Set default values for your meta data and the sitemap behaviour. Each page inherits these values by default, but content editors may override them individually when editing pages. For text based metatags, enter a string or a placeholder in the form of `{field_name}` to reuse the value of an existing field. For example, the placeholder `{title}` would substitute the value of the `title` field.');
+        $defaultValues->notes = $this->_('Any of the default values might be overridden per template by editing this field in the context of a template.');
+        $defaultValues->textformatters = ['TextformatterMarkdownExtra'];
 
         $values = array_merge($this->getDefaultConfig($field), $field->getArray());
 
         $formManager = new FormManager($this->seoMaestro());
         $form = $formManager->buildForm($this->getSeoData());
-
-        $this->alterConfigForm($form);
-
+        $this->alterMetaDataDefaultValuesConfigForm($form);
         $formManager->populateValues($form, $values);
 
-        $wrapper->import($form->children());
+        $defaultValues->import($form->children());
+        $wrapper->append($defaultValues);
+
+        // Add a second fieldset "webmaster tools" to set Google/Bing verification codes.
+        $webmasterTools = $this->wire('modules')->get('InputfieldFieldset');
+        $webmasterTools->label = $this->_('Webmaster Tools');
+        $webmasterTools->description = $this->_('Verify your site with search engines to help you track how well they are crawling your site.');
+        $webmasterTools->collapsed = Inputfield::collapsedYes;
+        $webmasterTools->attr('name', 'webmaster_tools');
+
+        $google = $this->wire('modules')->get('InputfieldText');
+        $google->attr('name', 'webmaster_tools_google_code');
+        $google->attr('value', $values['webmaster_tools_google_code'] ?? '');
+        $google->label = $this->_('Google Verification Code');
+        $google->description = $this->_('Get your Google verification code in the [Google Search Console](https://search.google.com/search-console).');
+        $webmasterTools->append($google);
+
+        $bing = $this->wire('modules')->get('InputfieldText');
+        $bing->attr('name', 'webmaster_tools_bing_code');
+        $bing->attr('value', $values['webmaster_tools_bing_code'] ?? '');
+        $bing->label = $this->_('Bing Verification Code');
+        $bing->description = $this->_('Get your Bing verification code in the [Bing Webmaster Tools](https://www.bing.com/toolbox/webmaster).');
+        $webmasterTools->append($bing);
+
+        $wrapper->append($webmasterTools);
 
         return $wrapper;
     }
@@ -291,17 +315,16 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
      */
     public function ___getConfigAllowContext(Field $field)
     {
-        $configGroups = array_map(function ($group) {
-            return sprintf('group_%s', $group);
-        }, $this->getSeoGroups());
-
         return array_merge(
             parent::___getConfigAllowContext($field),
-            $configGroups
+            [
+                'default_values',
+                'webmaster_tools'
+            ]
         );
     }
 
-    private function alterConfigForm(InputfieldWrapper $form)
+    private function alterMetaDataDefaultValuesConfigForm(InputfieldWrapper $form)
     {
         // Remove the canonical URL, there is no need to setup a default value.
         $form->remove('meta_canonicalUrl');

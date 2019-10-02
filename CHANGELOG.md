@@ -10,6 +10,7 @@
 ### Added
 
 * Check if the path to the XML sitemap is writeable and warn the user if it is not
+* Add a new webmaster tools section on field level, allowing to add Google and Bing verification codes ✌️
 
 ## [0.8.0] - 2019-06-15
 
