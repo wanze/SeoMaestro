@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.9.0] - 2019-10-02
+
 ### Fixed
 
 * Make the meta title format multi language aware ([#13](https://github.com/wanze/SeoMaestro/issues/13))
@@ -103,7 +105,8 @@ allow installations via Composer
 
 * Initial release of the module 🐣
 
-[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.9.0
 [0.8.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.8.0
 [0.7.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.7.0
 [0.6.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.6.0
