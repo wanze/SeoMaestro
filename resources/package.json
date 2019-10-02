@@ -8,7 +8,7 @@
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "parcel-bundler": "^1.12.3",
-    "sass": "^1.21.0"
+    "sass": "^1.23.0"
   },
   "scripts": {
     "dev": "./node_modules/.bin/parcel js/index.js -d ../ -o InputfieldSeoMaestro",
