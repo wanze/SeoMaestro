@@ -52,6 +52,11 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
 
         if ($this->sitemapManager->generate($sitemap)) {
             $this->wire('session')->message($this->_('The XML sitemap has been generated.'));
+        } else {
+            $parentDir = dirname($sitemap);
+            $this->wire('session')->error(
+                sprintf($this->_('Failed to generate the XML sitemap. Make sure that "%s" is writeable.'), $parentDir)
+            );
         }
     }
 
@@ -162,6 +167,13 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
 
         $sitemap = $this->wire('config')->paths->root . ltrim($this->get('sitemapPath'), DIRECTORY_SEPARATOR);
 
+        // Check if we are able to write the sitemap XML file.
+        $parentDir = dirname($sitemap);
+        if (!is_writable($parentDir)) {
+            $this->warning(sprintf($this->_('Unable to create the XML sitemap because "%s" is not writeable.'), $parentDir));
+            return false;
+        }
+
         // Do not generate if cache is still valid.
         if (is_file($sitemap)) {
             $diffMinutes = (time() - filemtime($sitemap)) / 60;
@@ -199,6 +211,7 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
         $field = wire('modules')->get('InputfieldText');
         $field->label = __('Sitemap path');
         $field->description = __('Path and filename of the sitemap relative from the ProcessWire root directory.');
+        $field->notes = __('Make sure that the parent folder of the sitemap is writeable.');
         $field->attr('name', 'sitemapPath');
         $field->attr('value', $data['sitemapPath']);
         $field->showIf = 'sitemapEnable=1';

@@ -7,6 +7,10 @@
 * Make the meta title format multi language aware ([#13](https://github.com/wanze/SeoMaestro/issues/13))
 * Update recommended meta description length  ([#12](https://github.com/wanze/SeoMaestro/issues/12))
 
+### Added
+
+* Check if the path to the XML sitemap is writeable and warn the user if it is not
+
 ## [0.8.0] - 2019-06-15
 
 ### Added
