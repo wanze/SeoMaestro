@@ -6,5 +6,4 @@ use ProcessWire\WireException;
 
 class SeoMaestroException extends WireException
 {
-
 }
