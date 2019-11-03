@@ -6,6 +6,10 @@
 
 * Fix misleading error message when the XML sitemap cannot be created for reasons other than a non-writable parent directory.
 
+### Changed
+
+* Do not create the XML sitemap for ajax requests. 
+
 ## [0.9.0] - 2019-10-02
 
 ### Fixed

@@ -166,6 +166,11 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
             return false;
         }
 
+        // Exclude ajax requests.
+        if ($this->wire('config')->ajax) {
+            return false;
+        }
+
         $sitemap = $this->getSitemapPath();
 
         // Check if we are able to write the sitemap XML file.
