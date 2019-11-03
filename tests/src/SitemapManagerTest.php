@@ -4,6 +4,7 @@ namespace SeoMaestro\Test;
 
 use ProcessWire\HookEvent;
 use ProcessWire\Page;
+use SeoMaestro\SeoMaestroException;
 use SeoMaestro\SitemapItem;
 use SeoMaestro\SitemapManager;
 
@@ -216,6 +217,19 @@ class SitemapManagerTest extends FunctionalTestCase
         $this->assertSitemapContains($item->priority);
         $this->assertSitemapContains($item->changefreq);
         $this->assertSitemapContains('/de/my-custom-url-de');
+    }
+
+    /**
+     * @test
+     * @covers ::generate
+     */
+    public function it_should_throw_an_exception_if_sitemap_path_is_not_writeable()
+    {
+        $sitemapPath = '/i/clearly/do/not/exist/sitemap.xml';
+
+        $this->expectException(SeoMaestroException::class);
+
+        $this->sitemapManager->generate($sitemapPath);
     }
 
     protected function tearDown()

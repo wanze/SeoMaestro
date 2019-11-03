@@ -3,6 +3,7 @@
 namespace ProcessWire;
 
 use SeoMaestro\DatabaseMigrations;
+use SeoMaestro\SeoMaestroException;
 use SeoMaestro\SitemapManager;
 
 /**
@@ -48,15 +49,15 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
      */
     public function hookGenerateSitemap(HookEvent $event)
     {
-        $sitemap = $this->wire('config')->paths->root . $this->get('sitemapPath');
+        $sitemapPath = $this->getSitemapPath();
 
-        if ($this->sitemapManager->generate($sitemap)) {
-            $this->wire('session')->message($this->_('The XML sitemap has been generated.'));
-        } else {
-            $parentDir = dirname($sitemap);
-            $this->wire('session')->error(
-                sprintf($this->_('Failed to generate the XML sitemap. Make sure that "%s" is writeable.'), $parentDir)
-            );
+        try {
+            $result = $this->sitemapManager->generate($sitemapPath);
+            if ($result) {
+                $this->wire('session')->message($this->_('The XML sitemap has been generated.'));
+            }
+        } catch (SeoMaestroException $e) {
+            $this->wire('session')->error($this->_($e->getMessage()));
         }
     }
 
@@ -165,7 +166,7 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
             return false;
         }
 
-        $sitemap = $this->wire('config')->paths->root . ltrim($this->get('sitemapPath'), DIRECTORY_SEPARATOR);
+        $sitemap = $this->getSitemapPath();
 
         // Check if we are able to write the sitemap XML file.
         $parentDir = dirname($sitemap);
@@ -184,6 +185,11 @@ class SeoMaestro extends WireData implements Module, ConfigurableModule
         }
 
         return true;
+    }
+
+    private function getSitemapPath()
+    {
+        return $this->wire('config')->paths->root . ltrim($this->get('sitemapPath'), DIRECTORY_SEPARATOR);
     }
 
     private function setDefaultConfig()

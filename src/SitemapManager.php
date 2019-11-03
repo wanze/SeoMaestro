@@ -6,6 +6,7 @@ use ProcessWire\Page;
 use ProcessWire\PageArray;
 use ProcessWire\TemplateFile;
 use ProcessWire\WireData;
+use ProcessWire\WireException;
 
 /**
  * Manages the creation of the sitemap.
@@ -26,11 +27,19 @@ class SitemapManager extends WireData
      * Generate the sitemap and store it under the given path.
      *
      * @param string $sitemapPath
+     * @throws SeoMaestroException
      *
-     * @return bool|int
+     * @return bool
      */
     public function generate($sitemapPath)
     {
+        $parentDir = dirname($sitemapPath);
+        if (!is_writeable($parentDir)) {
+            throw new SeoMaestroException(
+                sprintf('Unable to create the XML sitemap because "%s" is not writeable.', $parentDir)
+            );
+        }
+
         $items = $this->buildSitemapItems();
 
         if (!count($items)) {
@@ -39,7 +48,7 @@ class SitemapManager extends WireData
 
         $sitemap = $this->renderSitemap($items);
 
-        return file_put_contents($sitemapPath, $sitemap);
+        return (bool)file_put_contents($sitemapPath, $sitemap);
     }
 
     /**

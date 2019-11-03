@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+* Fix misleading error message when the XML sitemap cannot be created for reasons other than a non-writable parent directory.
+
 ## [0.9.0] - 2019-10-02
 
 ### Fixed
