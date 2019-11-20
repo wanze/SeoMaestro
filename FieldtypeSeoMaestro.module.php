@@ -15,7 +15,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
         return [
             'title' => 'Seo Maestro',
             'summary' => 'A fieldtype storing various meta tags (meta, opengraph, twitter etc.) and sitemap behaviour for pages.',
-            'version' => '0.9.0',
+            'version' => '1.0.0',
             'author' => 'Stefan Wanzenried (Wanze)',
             'installs' => 'InputfieldSeoMaestro',
             'requires' => [
