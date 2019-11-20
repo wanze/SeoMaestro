@@ -214,7 +214,7 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
     /**
      * Encode the value to be used in a meta tag.
      *
-     * First strips HTML tags and newlines, then encode any entities.
+     * First strips HTML tags and newlines, then encodes any entities.
      *
      * @param string $value
      *
@@ -224,9 +224,10 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
     {
         $sanitizer = $this->wire('sanitizer');
 
-        return $sanitizer->entities1(
-            $sanitizer->text($value, ['maxLength' => 0])
-        );
+        $value = $sanitizer->text($value, ['maxLength' => 0]);
+
+        // ENT_XML1 does not encode umlauts.
+        return $sanitizer->entities1($value, ENT_QUOTES | ENT_XML1);
     }
 
     protected function containsPlaceholder($value)

@@ -4,7 +4,8 @@
 
 ### Fixed
 
-* Fix misleading error message when the XML sitemap cannot be created for reasons other than a non-writable parent directory.
+* Fix misleading error message when the XML sitemap cannot be created for reasons other than a non-writable parent directory
+* Meta tags should not encode german umlaut characters ([#14](https://github.com/wanze/SeoMaestro/issues/14))
 
 ### Changed
 
