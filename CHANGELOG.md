@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [1.0.1] - 2019-02-01
+
+### Fixed
+
+* Fix double encoding issues when rendering metatags ([#15](https://github.com/wanze/SeoMaestro/issues/15)) - thanks @tiefenb
+
 ## [1.0.0] - 2019-11-20
 
 ### Fixed
@@ -116,7 +122,8 @@ allow installations via Composer
 
 * Initial release of the module 🐣
 
-[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/wanze/SeoMaestro/releases/tag/v1.0.1
 [1.0.0]: https://github.com/wanze/SeoMaestro/releases/tag/v1.0.0
 [0.9.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.9.0
 [0.8.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.8.0
