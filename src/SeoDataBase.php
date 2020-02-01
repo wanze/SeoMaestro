@@ -223,13 +223,12 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
     protected function encode($value)
     {
         $sanitizer = $this->wire('sanitizer');
-        
+
         $value = $sanitizer->text($value, ['maxLength' => 0]);
-        // decode value from database to prevent double encoding
+        // decode value from database to prevent double encoding.
         $value = $sanitizer->unentities($value);
         // ENT_XML1 does not encode umlauts.
         return $sanitizer->entities1($value, ENT_QUOTES | ENT_XML1);
-
     }
 
     protected function containsPlaceholder($value)

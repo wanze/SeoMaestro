@@ -63,19 +63,22 @@ class MetaTest extends FunctionalTestCase
         $this->wire('modules')->get('SeoMaestro')->set('baseUrl', '');
     }
 
-    public function test_render()
+    /**
+     * @test
+     */
+    public function it_should_render_metatags_encoded_and_prevent_double_encoding_issues()
     {
         $page = $this->createPage($this->template, '/');
         $page->title = 'Seo Maestro';
-        $page->get(self::FIELD_NAME)->meta->description = "This <a href='/foo'>string</a> <b>should</b><br> be sanitized and encode'd correctly.\nUmlauts are not encoded: äüö";
+        $page->get(self::FIELD_NAME)->meta->description = "This <a href='/foo'>string</a> <b>should</b><br> be sanitized and encode'd correctly.\nUmlauts and scandic letters are not encoded: ÅÄÖüäüö&auml;";
         $page->save();
 
-        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"This string should be sanitized and encode&apos;d correctly. Umlauts are not encoded: äüö\">\n<link rel=\"canonical\" href=\"http://localhost/en/untitled-page/\">";
+        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"This string should be sanitized and encode&apos;d correctly. Umlauts and scandic letters are not encoded: ÅÄÖüäüöä\">\n<link rel=\"canonical\" href=\"http://localhost/en/untitled-page/\">";
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
 
         $page->get(self::FIELD_NAME)->meta->keywords = 'Seo Maestro, ProcessWire, Module';
 
-        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"This string should be sanitized and encode&apos;d correctly. Umlauts are not encoded: äüö\">\n<meta name=\"keywords\" content=\"Seo Maestro, ProcessWire, Module\">\n<link rel=\"canonical\" href=\"http://localhost/en/untitled-page/\">";
+        $expected = "<title>Seo Maestro</title>\n<meta name=\"description\" content=\"This string should be sanitized and encode&apos;d correctly. Umlauts and scandic letters are not encoded: ÅÄÖüäüöä\">\n<meta name=\"keywords\" content=\"Seo Maestro, ProcessWire, Module\">\n<link rel=\"canonical\" href=\"http://localhost/en/untitled-page/\">";
 
         $this->assertEquals($expected, $page->get(self::FIELD_NAME)->meta->render());
     }
