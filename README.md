@@ -263,7 +263,7 @@ $wire->addHookAfter('SeoMaestro::renderSeoDataValue', function (HookEvent $event
     if ($group === 'meta' && $name === 'title') {
         $event->return = $value . ' | acme.com';
     }
-}
+});
 ```
 
 ### ___alterSeoDataForm
