@@ -64,7 +64,9 @@ class BreadcrumbStructuredData extends StructuredData
             $this->listItems->append($this->buildListItem($parent));
         }
 
-        $this->listItems->append($this->buildListItem($this->page));
+        if ($this->page->viewable()) {
+            $this->listItems->append($this->buildListItem($this->page));
+        }
     }
 
     private function buildListItem(Page $page)
