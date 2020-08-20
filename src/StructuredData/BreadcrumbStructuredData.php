@@ -2,6 +2,7 @@
 
 namespace SeoMaestro\StructuredData;
 
+use ProcessWire\FieldsetPage;
 use ProcessWire\Page;
 use ProcessWire\TemplateFile;
 use ProcessWire\WireArray;
@@ -57,14 +58,14 @@ class BreadcrumbStructuredData extends StructuredData
 
     private function buildListItems()
     {
-        foreach ($this->page->parents('template!=home') as $parent) {
-            if (!$parent->viewable()) {
+        foreach ($this->page->parents('template!=root') as $parent) {
+            if (!$parent->viewable() || $this->page instanceof FieldsetPage) {
                 continue;
             }
             $this->listItems->append($this->buildListItem($parent));
         }
 
-        if ($this->page->viewable()) {
+        if ($this->page->viewable() && !$this->page instanceof FieldsetPage) {
             $this->listItems->append($this->buildListItem($this->page));
         }
     }
