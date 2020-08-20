@@ -3,6 +3,7 @@
 namespace SeoMaestro\StructuredData;
 
 use ProcessWire\Page;
+use ProcessWire\RepeaterPage;
 use ProcessWire\TemplateFile;
 use ProcessWire\WireArray;
 
@@ -22,7 +23,17 @@ class BreadcrumbStructuredData extends StructuredData
     {
         parent::__construct();
 
-        $this->page = $page;
+        if ($page instanceof RepeaterPage) {
+            foreach ($page->parents() as $parent) {
+                if (!$parent instanceof RepeaterPage) {
+                    $this->page = $parent;
+                    break;
+                }
+            }
+        } else {
+            $this->page = $page;
+        }
+        
         $this->listItems = new WireArray();
 
         $this->buildListItems();
