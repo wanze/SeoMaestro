@@ -309,6 +309,15 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
 
         return $wrapper;
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function ___getConfigAdvancedInputfields(Field $field) {
+		$wrapper = parent::___getConfigAdvancedInputfields($field);
+        $wrapper->remove($wrapper->get('autojoin'));
+		return $wrapper;
+	}
 
     /**
      * {@inheritdoc}
