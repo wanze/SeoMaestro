@@ -313,6 +313,16 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
     /**
      * {@inheritdoc}
      */
+    public function ___getConfigAdvancedInputfields(Field $field)
+    {
+        $wrapper = parent::___getConfigAdvancedInputfields($field);
+        $wrapper->remove($wrapper->get('autojoin'));
+        return $wrapper;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function ___getConfigAllowContext(Field $field)
     {
         return array_merge(
