@@ -188,7 +188,8 @@ class PageFieldValue extends WireData
         if ($field->get('webmaster_tools_bing_code')) {
             $tags['webmaster_tools_bing_code'] = sprintf(
                 '<meta name="msvalidate.01" content="%s">',
-                $this->wire('sanitizer')->entities($field->get('webmaster_tools_bing_code')));
+                $this->wire('sanitizer')->entities($field->get('webmaster_tools_bing_code'))
+            );
         }
 
         return $tags;

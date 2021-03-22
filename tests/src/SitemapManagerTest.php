@@ -47,7 +47,8 @@ class SitemapManagerTest extends FunctionalTestCase
 
         $this->sitemap = dirname(__DIR__) . '/temp/sitemap.test.xml';
 
-        $this->sitemapManager = new SitemapManager([
+        $this->sitemapManager = new SitemapManager(
+            [
                 'defaultLanguage' => 'en',
                 'baseUrl' => 'https://seomaestro.processwire.com',
             ]

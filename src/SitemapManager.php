@@ -73,7 +73,8 @@ class SitemapManager extends WireData
             return [];
         }
 
-        $selector = sprintf('template=%s,template!=admin,id!=%s,include=hidden',
+        $selector = sprintf(
+            'template=%s,template!=admin,id!=%s,include=hidden',
             implode('|', array_keys($templates)),
             $this->getExcludedPages()
         );

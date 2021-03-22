@@ -34,7 +34,8 @@ class InputfieldGooglePreview extends InputfieldMarkup
 
     public function ___render()
     {
-        $this->attr('value', sprintf('<div class="preview"><div class="title" data-title="%s">%s</div><div class="link">%s</div><div class="desc" data-desc="%s">%s</div></div>',
+        $this->attr('value', sprintf(
+            '<div class="preview"><div class="title" data-title="%s">%s</div><div class="link">%s</div><div class="desc" data-desc="%s">%s</div></div>',
             $this->pageFieldValue->get('meta')->getInherited('title'),
             $this->pageFieldValue->get('meta')->title,
             $this->pageFieldValue->getPage()->httpUrl,

@@ -107,7 +107,8 @@ class InputfieldMetaData extends InputfieldFieldset
 
         // Add a little preview image for the opengraph image :)
         if ($this->name === 'opengraph_image' && $preview->attr('value')) {
-            $image = sprintf('<img class="seomaestro-opengraph-image" src="%s" alt="%s">',
+            $image = sprintf(
+                '<img class="seomaestro-opengraph-image" src="%s" alt="%s">',
                 $preview->attr('value'),
                 $this->_('Preview of the opengraph image')
             );
