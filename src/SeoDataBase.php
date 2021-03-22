@@ -169,7 +169,7 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
         $value = parent::get($key . $langId);
 
         // Fallback to default language if no value is set.
-        if ($value === null) {
+        if ($value === null || empty($value)) {
             $value = parent::get($key);
         }
 
@@ -197,7 +197,7 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
         $value = $field->get($key . $langId);
 
         // Fallback to default language.
-        if ($value === null) {
+        if ($value === null || empty($value)) {
             $value = $field->get($key);
         }
 
