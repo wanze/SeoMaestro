@@ -1,6 +1,12 @@
 # Changelog
 
-## [Unreleased]
+## [1.0.2] - 2021-03-22
+
+### Changed
+
+* Remove `autojoin` option for SeoMaestro fields ([#31](https://github.com/wanze/SeoMaestro/pull/31)) - thanks @tiefenb
+* Fallback to default language for empty values ([#27](https://github.com/wanze/SeoMaestro/pull/27)) - thanks @tiefenb
+* Prevent adding repeater pages as structured data breadcrumbs ([#25](https://github.com/wanze/SeoMaestro/pull/25)) - thanks @rjgamer
 
 ## [1.0.1] - 2019-02-01
 
@@ -122,7 +128,9 @@ allow installations via Composer
 
 * Initial release of the module 🐣
 
-[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v1.0.1...HEAD
+
+[Unreleased]: https://github.com/wanze/SeoMaestro/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/wanze/SeoMaestro/releases/tag/v1.0.2
 [1.0.1]: https://github.com/wanze/SeoMaestro/releases/tag/v1.0.1
 [1.0.0]: https://github.com/wanze/SeoMaestro/releases/tag/v1.0.0
 [0.9.0]: https://github.com/wanze/SeoMaestro/releases/tag/v0.9.0
