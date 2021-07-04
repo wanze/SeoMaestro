@@ -1,6 +1,5 @@
 # Seo Maestro
 
-[![Build Status](https://travis-ci.org/wanze/SeoMaestro.svg?branch=master)](https://travis-ci.org/wanze/SeoMaestro)
 [![StyleCI](https://github.styleci.io/repos/168985372/shield?branch=master)](https://github.styleci.io/repos/168985372)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![ProcessWire 3](https://img.shields.io/badge/ProcessWire-3.x-orange.svg)](https://github.com/processwire/processwire)
