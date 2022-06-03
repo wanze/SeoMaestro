@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.1] - 2022-06-03
+
+### Fixed
+
+* Fix a couple of PHP `8.1` related errors ([#43](https://github.com/wanze/SeoMaestro/pull/43)) - thanks @yuters
+
 ## [1.1.0] - 2021-07-04
 
 ### Added
@@ -135,6 +141,7 @@ allow installations via Composer
 * Initial release of the module 🐣
 
 
+[1.1.1]: https://github.com/wanze/SeoMaestro/releases/tag/v1.1.1
 [1.1.0]: https://github.com/wanze/SeoMaestro/releases/tag/v1.1.0
 [1.0.2]: https://github.com/wanze/SeoMaestro/releases/tag/v1.0.2
 [1.0.1]: https://github.com/wanze/SeoMaestro/releases/tag/v1.0.1
