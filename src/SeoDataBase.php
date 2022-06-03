@@ -233,7 +233,7 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
 
     protected function containsPlaceholder($value)
     {
-        return preg_match('/\{.*\}/', $value);
+        return (bool) $value && preg_match('/\{.*\}/', $value);
     }
 
     protected function getCurrentLanguageId()
