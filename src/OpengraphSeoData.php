@@ -74,12 +74,12 @@ class OpengraphSeoData extends SeoDataBase
 
                 if ($fieldName === false) {
                     // External image source.
-                    list($width, $height, $typeId) = @getimagesize($value);
+                    $imageInfo = @getimagesize($value);
 
-                    if ($width !== null) {
-                        $tags['imageType'] = $this->renderTag('image:type', sprintf('image/%s', $this->getImageType($typeId)));
-                        $tags['imageWidth'] = $this->renderTag('image:width', $width);
-                        $tags['imageHeight'] = $this->renderTag('image:height', $height);
+                    if ($imageInfo !== false) {
+                        $tags['imageType'] = $this->renderTag('image:type', sprintf('image/%s', $this->getImageType($imageInfo[2])));
+                        $tags['imageWidth'] = $this->renderTag('image:width', $imageInfo[0]);
+                        $tags['imageHeight'] = $this->renderTag('image:height', $imageInfo[1]);
                     }
                 } else {
                     // Image from a PageImage object.
@@ -190,7 +190,7 @@ class OpengraphSeoData extends SeoDataBase
      */
     private function getFieldNameFromPlaceholder($value)
     {
-        if ($value && preg_match('/^\{(.*)\}$/', $value, $matches)) {
+        if ($value && preg_match('/^\{(.*)\}$/', (string) $value, $matches)) {
             return $matches[1];
         }
 
