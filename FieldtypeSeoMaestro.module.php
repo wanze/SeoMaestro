@@ -19,7 +19,7 @@ class FieldtypeSeoMaestro extends Fieldtype implements Module
             'author' => 'Stefan Wanzenried (Wanze)',
             'installs' => 'InputfieldSeoMaestro',
             'requires' => [
-                'PHP>=7.2.0',
+                'PHP>=7.0.0',
                 'ProcessWire>=3.0.0',
                 'SeoMaestro',
             ],
