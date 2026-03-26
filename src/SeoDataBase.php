@@ -224,7 +224,7 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
     {
         $sanitizer = $this->wire('sanitizer');
 
-        $value = $sanitizer->text($value, ['maxLength' => 0]);
+        $value = $sanitizer->text((string) $value, ['maxLength' => 0]);
         // decode value from database to prevent double encoding.
         $value = $sanitizer->unentities($value);
         // ENT_XML1 does not encode umlauts.
@@ -233,7 +233,7 @@ abstract class SeoDataBase extends WireData implements SeoDataInterface
 
     protected function containsPlaceholder($value)
     {
-        return (bool) $value && preg_match('/\{.*\}/', $value);
+        return (bool) $value && preg_match('/\{.*\}/', (string) $value);
     }
 
     protected function getCurrentLanguageId()

@@ -93,7 +93,7 @@ class MetaSeoData extends SeoDataBase
         $baseUrl = $this->seoMaestro->get('baseUrl');
 
         if ($value) {
-            $canonicalUrl = strpos($value, 'http') === 0 ? $value : $baseUrl . $value;
+            $canonicalUrl = strpos((string) $value, 'http') === 0 ? $value : $baseUrl . $value;
         } else {
             $page = $this->pageFieldValue->getPage();
             $canonicalUrl = $baseUrl ? $baseUrl . $page->url : $page->httpUrl;
