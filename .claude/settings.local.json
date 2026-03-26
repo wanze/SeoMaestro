@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(grep -rn \"$inputfield->$.*$\\\\|->{\\\\|->get.*$langId\" /Users/markus.tiefenbacher/apps/github/SeoMaestro/src/)",
-      "Bash(wc -l /Users/markus.tiefenbacher/apps/github/SeoMaestro/src/*.php /Users/markus.tiefenbacher/apps/github/SeoMaestro/src/StructuredData/*.php)"
-    ]
-  }
-}
